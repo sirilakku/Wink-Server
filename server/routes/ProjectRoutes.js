@@ -9,7 +9,7 @@ router.get('/', welcome);
 
 router.get('/login', login)
 
- router.get('/monthlyCalendar', monthlyCalendar)
+router.get('/monthlyCalendar', monthlyCalendar)
 
 // router.post('/login', ()=>{
 
