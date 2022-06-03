@@ -15,4 +15,8 @@ function login(req, res) {
     res.send(`Welcome ${user}`)
 }
 
-module.exports = {welcome, login, user}
+function monthlyCalender(req, res) {
+    res.send(`<h1> Monthly Calender <h1>`)
+}
+
+module.exports = {welcome, login, user, monthlyCalender}
