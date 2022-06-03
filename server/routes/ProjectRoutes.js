@@ -1,5 +1,5 @@
 let express = require('express');
-const { welcome, login } = require('../../model/functions');
+const { welcome, login, monthlyCalendar} = require('../../model/functions');
 let router = express.Router();
 let database = require('../../model/mySql')
 
@@ -8,6 +8,8 @@ let database = require('../../model/mySql')
 router.get('/', welcome);
 
 router.get('/login', login)
+
+ router.get('/monthlyCalendar', monthlyCalendar)
 
 // router.post('/login', ()=>{
 
