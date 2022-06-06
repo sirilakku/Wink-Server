@@ -4,15 +4,23 @@ let router = express.Router();
 let database = require('../../model/mySql')
 
 
+
+
+
 /* GET home page. */
 router.get('/', welcome);
 
-router.get('/login', login)
+// router.get('/login', login)
 
 router.get('/monthlyCalendar', monthlyCalendar)
 
-// router.post('/login', ()=>{
+router.post("/login", async (req, res) => {
+    
+    console.log("username is", user)
+    
+    
 
-// })
+  });
+
 
 module.exports = router;
