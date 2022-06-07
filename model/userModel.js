@@ -23,9 +23,9 @@ const prisma = new PrismaClient()
 let userByName = async (username) => {
     let userByName = await prisma.user.findUnique({
     where: {
-      username : ""
+      username : username,
           },
         })
         return userByName
     }
-module.exports={userByName}
+module.exports=userByName
