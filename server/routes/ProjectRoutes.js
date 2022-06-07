@@ -1,6 +1,6 @@
 const userByName = require("../../model/userModel");
 
-
+const jwt = require("jsonwebtoken");
 let express = require("express");
 const {
   welcome,
@@ -17,6 +17,33 @@ router.get("/", welcome);
 
 router.get("/monthlyCalendar", monthlyCalendar);
 
+// router.post("/login", async (req, res) => {
+//   const user = req.body.username;
+//   const password = req.body.password;
+
+//   const username = await userByName(user);
+//   if (
+//     username.username === user &&
+//     username.password === password &&
+//     username.inactive === false
+//   ) {
+//     console.log("Hello username", username);
+//     console.log("Hello password", password, username.password);
+//     res.json({
+//       firstname: username.firstname,
+//       lastname: username.lastname,
+//       username: username.username,
+//       password: username.password,
+//       inactive: username.inactive,
+//       userID: username.idUser,
+//     });
+//   } else {
+//     res.json({
+//       message: "Invalid username or password",
+//     });
+//   }
+// });
+
 router.post("/login", async (req, res) => {
   const user = req.body.username;
   const password = req.body.password;
@@ -27,20 +54,14 @@ router.post("/login", async (req, res) => {
     username.password === password &&
     username.inactive === false
   ) {
-    console.log("Hello username", username);
-    console.log("Hello password", password, username.password);
-    res.json({
-      firstname: username.firstname,
-      lastname: username.lastname,
-      username: username.username,
-      password: username.password,
-      inactive: username.inactive,
-      userID: username.idUser,
+    jwt.sign({ user }, "privatekey", { expiresIn: "900" }, (err, token) => {
+      if (err) {
+        console.log(err);
+      }
+      res.send(token);
     });
   } else {
-    res.json({
-      message: "Invalid username or password",
-    });
+    console.log("ERROR: Could not log in");
   }
 });
 
