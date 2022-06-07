@@ -1,26 +1,23 @@
+const {createUser,findUser,userByName } = require("../../model/userModel")
+
 let express = require('express');
-const { welcome, login, monthlyCalendar} = require('../../model/functions');
+const { welcome, login, monthlyCalendar, user} = require('../../model/functions');
 let router = express.Router();
-let database = require('../../model/mySql')
-
-
-
-
 
 /* GET home page. */
 router.get('/', welcome);
 
-// router.get('/login', login)
+ //router.get('/login', login)
 
 router.get('/monthlyCalendar', monthlyCalendar)
 
 router.post("/login", async (req, res) => {
-    
-    console.log("username is", user)
-    
-    
+    const user = req.body.username
 
-  });
+    const username = await userByName({userByName:user})
 
+    console.log('Hello username', username)
+    console.log('Hello user', user)
+})
 
 module.exports = router;
