@@ -1,18 +1,31 @@
-const mySql = require("./mySql")
+//import { PrismaClient } from '@prisma/client';
+const { PrismaClient } = require('@prisma/client');
 
-const userSchema = new mySql.Schema({
-    userName : { type:String, required:true},
-    password : {type:String,required:true},
-    createdAt : {type: Date, default: new Date()}
-})
+const prisma = new PrismaClient()
 
-const Employee = mySql.model ("User",userSchema)
 
-const createEmp = async (newEmpData) => {
-    const newEmp = await Employee.create (newEmpData)
-    return newEmp;
-  };
-  
-console.log("Employee created")
-
-module.exports={createEmp}
+// let createUser = async(newUser) => {
+//     const createdUser = await prisma.user.create({
+//         data: {
+//             username: newUser
+//             //password:password
+//           },
+//     })
+//     return createdUser
+//  }
+    
+// let findUser =  async(username) =>{
+//     console.log("User", id)
+//     let findUser = await prisma.user.findUnique(username)
+//     return (findUser)
+    
+// } 
+let userByName = async (username) => {
+    let userByName = await prisma.user.findUnique({
+    where: {
+      username : ""
+          },
+        })
+        return userByName
+    }
+module.exports={userByName}
