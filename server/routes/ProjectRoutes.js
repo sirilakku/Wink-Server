@@ -58,9 +58,15 @@ router.post("/login", async (req, res) => {
       if (err) {
         console.log(err);
       }
-      res.send(token);
+      res.json({
+        firstname: username.firstname,
+        lastname: username.lastname,
+        token: token,
+    });
+      
     });
   } else {
+    res.sendStatus(401) ;
     console.log("ERROR: Could not log in");
   }
 });
