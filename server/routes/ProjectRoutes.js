@@ -1,4 +1,4 @@
-const { userByName, userByStoreID } = require("../../model/userModel");
+const userByName  = require("../../model/userModel");
 const jwt = require("jsonwebtoken");
 let express = require("express");
 const {
@@ -72,12 +72,5 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/userprofile", async (req, res) => {
-  const user = req.body.username;
-  //console.log('Hello user in userprofile', user)
-  const userNProfile = await userByStoreID(user);
-  console.log("user name with profile", userNProfile);
-  res.send(userNProfile.firstname);
-});
 
 module.exports = router;
