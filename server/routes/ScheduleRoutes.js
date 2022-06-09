@@ -1,23 +1,15 @@
+const getAllSchedulesByStore = require("../../model/scheduleModel");
 
-let express = require('express');
+let express = require("express");
 let router = express.Router();
 
+router.get("/store/:storeId", async (req, res) => {
+  //All employee Schedule
+  const storeId = req.params.storeId*1 ;
+  const allSchedules = await getAllSchedulesByStore(storeId);
 
-router.get('/schedule', async(req, res) =>{
-    //All employee Schedule
-    //StoreID
-})
-router.get('/userSchedule/:storeId/:userId', async(req, res) =>{
-    // userID, storeID
-    const storeId = req.params.storeId
-    let userId = req.params.userId
-    let schedule = await prisma.$queryRaw`SELECT * FROM schedule WHERE UserId=${userId} AND storeID = ${storeId}`
-    res.send(schedule)
-    
-})
-router.get('/coworkerSchedule', async(req, res) =>{
-    // Co-workers Schedule
-    
-})
+  res.json(allSchedules);
+});
+
 
 module.exports = router;
