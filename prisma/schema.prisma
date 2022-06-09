@@ -7,6 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// model schedule {
+//   userId
+// }
+
 
 model appointments {
   idAppointments                                                                         Int              @id @default(autoincrement())
