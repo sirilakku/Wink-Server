@@ -8,15 +8,14 @@ datasource db {
 }
 
 model schedule {
-  scheduleId  Int @id @default(autoincrement())
-  workCode String @db.VarChar(300)
-  startTime DateTime @default(dbgenerated("(0000-00-00 00:00:00)")) @db.Timestamp(0)
-  endTime DateTime @default(dbgenerated("(0000-00-00 00:00:00)")) @db.Timestamp(0)
-  privileges userprivileges  @relation(fields: [privilegesId], references: [idUserPrivileges],map: "fk_UserPrivileges_privilages")
+  scheduleId   Int       @id @default(autoincrement())
+  workCode     String?   @db.VarChar(300)
+  startTime    DateTime? @db.DateTime(0)
+  endTime      DateTime? @db.DateTime(0)
   privilegesId Int
-  @@index([privilegesId])
-}
 
+  @@index([privilegesId], map: "fk_UserPrivileges_privilages_idx")
+}
 
 model appointments {
   idAppointments                                                                         Int              @id @default(autoincrement())
@@ -822,13 +821,11 @@ model userprivileges {
   store                     store?      @relation(fields: [Store_idStore], references: [idStore], onDelete: Restrict, onUpdate: Restrict, map: "fk_UserPrivileges_Store1")
   userprofile               userprofile @relation(fields: [UserProfile_idUserProfile], references: [idUserProfile], onUpdate: Restrict, map: "fk_UserPrivileges_UserProfile1")
   user                      user        @relation(fields: [User_idUser], references: [idUser], onUpdate: Restrict, map: "fk_UserPrivileges_User")
-  schedules     schedule[]  
 
   @@unique([User_idUser, Store_idStore], map: "uniepriv")
   @@index([Store_idStore], map: "fk_UserPrivileges_Store1")
   @@index([User_idUser], map: "fk_UserPrivileges_User")
   @@index([UserProfile_idUserProfile], map: "fk_UserPrivileges_UserProfile1_idx")
-  
 }
 
 model userprofile {
