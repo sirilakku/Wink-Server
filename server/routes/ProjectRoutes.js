@@ -43,34 +43,43 @@ router.get("/monthlyCalendar", monthlyCalendar);
 //   }
 // });
 
-router.post("/login", async (req, res) => {
-  const user = req.body.username;
+// router.post("/login", async (req, res) => {
+//   const user = req.body.username;
 
-  console.log("Hello user", user);
+//   console.log("Hello user", user);
 
-  const password = req.body.password;
+//   const password = req.body.password;
 
-  const username = await userByName(user);
-  if (
-    username.username === user &&
-    username.password === password &&
-    username.inactive === false
-  ) {
-    jwt.sign({ user }, "privatekey", { expiresIn: "900" }, (err, token) => {
-      if (err) {
-        console.log(err);
-      }
-      res.json({
-        firstname: username.firstname,
-        lastname: username.lastname,
-        token: token,
-      });
-    });
-  } else {
-    res.sendStatus(401);
-    console.log("ERROR: Could not log in");
-  }
-});
+//   const username = await userByName(user);
+//   if (
+//     username.username === user &&
+//     username.password === password &&
+//     username.inactive === false
+//   ) {
+//     jwt.sign({ user }, "privatekey", { expiresIn: "900" }, (err, token) => {
+//       if (err) {
+//         console.log(err);
+//       }
+//       res.json({
+//         firstname: username.firstname,
+//         lastname: username.lastname,
+//         token: token,
+//       });
+//     });
+//   } else {
+//     res.sendStatus(401);
+//     console.log("ERROR: Could not log in");
+//   }
+// });
+
+// router.get("/loggedInUser", (req, res) => {
+
+//   res.json({
+//     firstname: username.firstname,
+//     lastname: username.lastname,
+//     token: token,
+//   });
+// });
 
 
 module.exports = router;

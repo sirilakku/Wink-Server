@@ -2,9 +2,12 @@ const express = require("express")
 const app = express()
 const projectRoutes = require("./server/routes/ProjectRoutes")
 const scheduleRoutes = require("./server/routes/ScheduleRoutes")
+const authRoutes = require("./server/routes/authRoutes")
 
 app.use(express.json())
 app.use("/api", projectRoutes)
+app.use("/api", scheduleRoutes)
+app.use("/api", authRoutes)
 app.use("/api/schedule", scheduleRoutes)
 
 const PORT=4000
