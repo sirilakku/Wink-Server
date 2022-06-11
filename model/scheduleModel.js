@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const createSchedules =async()=>{
 
-  console.log("first", prisma.)
+  // console.log("first", prisma.)
   //const schedules = await prisma.schedule.count(
     
     // data:[

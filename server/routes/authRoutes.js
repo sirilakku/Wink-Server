@@ -4,6 +4,7 @@ var debug = require("debug")("server:routes");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const userByName  = require("../../model/userModel");
+var JSONbig = require('json-bigint');
 
 passport.use(
     new LocalStrategy(async function (username, password, done) {
@@ -16,8 +17,9 @@ passport.use(
         if (!passwordsMatch) {
           return done(null, false);
         }
-        const userToSend = user.toObject();
-        delete userToSend.password;
+        // const userToSend = user.toObject();
+        const userToSend = {username: user.username, firstname: user.firstname, lastname: user.lastname, inactive: user.inactive, id: user.idUser};
+        // delete userToSend.password;
         console.log("user after deleting password", userToSend);
         return done(null, userToSend);
       } catch (error) {
@@ -34,7 +36,7 @@ passport.serializeUser(function (user, done) {
   passport.deserializeUser(async function (username, done) {
     console.log("passport is trying to recover the user from the cookie", username);
     try {
-      const user = await userByName(id);
+      const user = await userByName(username);
       if (!user) {
         done(new Error("User not found or deleted"));
         return;
@@ -55,7 +57,8 @@ passport.serializeUser(function (user, done) {
   });
   
   router.get("/loggedInUser", (req, res) => {
-    res.send(req.user);
+    const userToSend = {username: req.user.username, firstname: req.user.firstname, lastname: req.user.lastname, inactive: req.user.inactive, id: req.user.idUser};
+    res.send(userToSend);
   });
   
   module.exports = router;

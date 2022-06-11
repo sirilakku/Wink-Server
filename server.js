@@ -4,9 +4,16 @@ const projectRoutes = require("./server/routes/ProjectRoutes")
 const scheduleRoutes = require("./server/routes/ScheduleRoutes")
 const authRoutes = require("./server/routes/authRoutes")
 
+const passport = require("passport");
+const session = require("express-session");
+app.use(session({ secret: "apple",
+cookie: { maxAge: 60000 }}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(express.json())
 app.use("/api", projectRoutes)
-app.use("/api", scheduleRoutes)
+
 app.use("/api", authRoutes)
 app.use("/api/schedule", scheduleRoutes)
 
@@ -43,6 +50,7 @@ io.on("connection", (socket) => {
     socket.leave(roomId);
   });
 });
+
 
 
 server.listen(PORT, echoPortNumber);
