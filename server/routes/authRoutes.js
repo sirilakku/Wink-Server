@@ -3,7 +3,7 @@ var router = express.Router();
 var debug = require("debug")("server:routes");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const userByName  = require("../../model/userModel");
+const { userByName } = require("../../model/userModel");
 var JSONbig = require('json-bigint');
 
 passport.use(
