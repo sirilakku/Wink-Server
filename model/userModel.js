@@ -12,8 +12,27 @@ let userByName = async (username) => {
       username : username,
           },
         })
+        console.log("userbyname function", userByName);
         return userByName
     }
 
+    let userStoreSelections = async (id) => {
+      console.log("userstore selection id", id);
+        let userStores = await prisma.userprivileges.findMany({
+            where: {
+              User_idUser: id,
+            },
+            include: {
+              store: {
+                select: {
+                  name: true
+              }
+            }
+          }
+          })
+          console.log("userstore selection", userStores);
+          return userStores
+      }
+      
 
-module.exports= userByName
+module.exports= { userByName, userStoreSelections } 
