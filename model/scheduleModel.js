@@ -1,11 +1,10 @@
 const { PrismaClient } = require("@prisma/client");
 // using `prisma` in your application to read and write data in DB
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 const createSchedules =async()=>{
 
-  console.log("first", prisma.)
-  //const schedules = await prisma.schedule.count(
+    const schedules = await prisma.schedule.createMany({
     
     // data:[
     //   {workCode: "working",startTime:"2022-06-13 09:00:00", endTime:"2022-6-13 17:00:00", privilegesId:12},
@@ -22,8 +21,8 @@ const createSchedules =async()=>{
     //   {workCode: "vacation",startTime:"2022-06-15 00:00:00", endTime:"2022-06-25 23:59:59", privilegesId:74},
     //   {workCode: "working",startTime:"2022-06-26 13:00:15", endTime:"2022-06-26 17:00:00", privilegesId:74},
     // ]
-  //)
-  //return schedules
+})
+  return schedules
 }
 
 const getAllSchedulesByStore = async (storeId) => {
