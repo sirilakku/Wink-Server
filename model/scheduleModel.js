@@ -53,4 +53,4 @@ const getAllSchedulesByStore = async (storeId) => {
 };
 
 createSchedules();
-module.exports = {getAllSchedulesByStore, createSchedules};
+module.exports = getAllSchedulesByStore;
