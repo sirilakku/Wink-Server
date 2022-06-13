@@ -16,7 +16,11 @@ passport.use(
       if (!passwordsMatch) {
         return done(null, false);
       }
-      // const userToSend = user.toObject();
+      const isActive = user.inactive === false;
+      if (!isActive) {
+        return done(null, false);
+      }
+      
       const userToSend = {
         username: user.username,
         firstname: user.firstname,
