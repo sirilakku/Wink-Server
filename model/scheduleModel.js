@@ -22,6 +22,22 @@ const createSchedules = async () => {
   // })
   // return schedules
 };
+// createSchedules()
+
+const getPositionsByStore = async (storeId) => {
+  const allPositions = await prisma.userprivileges.findMany({
+    where: { Store_idStore: storeId },
+    select: { userprofile: { select: { name: true } } },
+  });
+  const res = [];
+  allPositions.map((position) => {
+    res.push(position.userprofile.name);
+  });
+  const duplicateRemoved = Array.from(new Set(res));
+  // console.log(duplicateRemoved);
+  return duplicateRemoved;
+};
+
 
 const getAllSchedulesByStore = async (storeId) => {
   const allEmployees = await prisma.userprivileges.findMany({
@@ -49,14 +65,24 @@ const getAllSchedulesByStore = async (storeId) => {
   return res;
 };
 
-// createSchedules();
+// const getStoreHours = async (storeId) => {
+//   // const storeHours = await prisma.storeopeninghours.findMany();
+//   const storeHours = await prisma.storeopeninghours.findMany({
+//     where: { Store_idStore: 1 },
+//   });
+//   console.log("store hours", storeHours);
+// };
 
-const getStoreHours = async (storeId) => {
-  // const storeHours = await prisma.storeopeninghours.findMany();
-  const storeHours = await prisma.storeopeninghours.findMany({
-    where: { Store_idStore: 1 },
-  });
-  console.log("store hours", storeHours);
-};
-
-module.exports = getAllSchedulesByStore;
+// const getUserSummaryData = async (previlegesId) => {
+//   const mySummaryData = await prisma.userprivileges.findUnique({
+//     where: { idUserPrivileges: previlegesId },
+//     select: {
+//       User_idUser: true,
+//       idUserPrivileges: true,
+//       userprofile: { select: { name: true } },
+//       user: { select: { firstname: true, lastname: true } },
+//     },
+//   });
+//   return mySummaryData;
+// };
+module.exports = { getAllSchedulesByStore, getPositionsByStore };
