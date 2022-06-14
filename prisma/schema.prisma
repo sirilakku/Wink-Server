@@ -8,13 +8,17 @@ datasource db {
 }
 
 model schedule {
-  scheduleId   Int       @id @default(autoincrement())
-  workCode     String?   @db.VarChar(300)
-  startTime    DateTime? @db.DateTime(0)
-  endTime      DateTime? @db.DateTime(0)
-  privilegesId Int
+  idSchedule    Int       @id @default(autoincrement())
+  workcode      Int?
+  starttime     DateTime? @default(dbgenerated("(0000-00-00 00:00:00)")) @db.DateTime(0)
+  endtime       DateTime? @default(dbgenerated("(0000-00-00 00:00:00)")) @db.DateTime(0)
+  User_idUser   Int?
+  Store_idStore Int?
+  store         store?    @relation(fields: [Store_idStore], references: [idStore], onDelete: NoAction, onUpdate: NoAction, map: "storeId")
+  user          user?     @relation(fields: [User_idUser], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "userId")
 
-  @@index([privilegesId], map: "fk_UserPrivileges_privilages_idx")
+  @@index([Store_idStore], map: "\"fk_Schedule_Store_idx\"")
+  @@index([User_idUser], map: "\"fk_Schedule_User_idx\"")
 }
 
 model appointments {
@@ -617,6 +621,7 @@ model store {
   patient_patient_enteredInStore_idStoreTostore              patient[]           @relation("patient_enteredInStore_idStoreTostore")
   patientinvoice_patientinvoice_Store_idStoreTostore         patientinvoice[]    @relation("patientinvoice_Store_idStoreTostore")
   patientinvoice_patientinvoice_pickUpAtStore_idStoreTostore patientinvoice[]    @relation("patientinvoice_pickUpAtStore_idStoreTostore")
+  schedule                                                   schedule[]
   other_store_storeTostore_edgeAtStore_idStore               store[]             @relation("storeTostore_edgeAtStore_idStore")
   other_store_storeTostore_winkStoreBillStore_idStore        store[]             @relation("storeTostore_winkStoreBillStore_idStore")
   other_store_storeTostore_winkStoreShipStore_idStore        store[]             @relation("storeTostore_winkStoreShipStore_idStore")
@@ -790,6 +795,7 @@ model user {
   store                                                          store?               @relation(fields: [Store_idStore], references: [idStore], onDelete: Restrict, onUpdate: Restrict, map: "fk_User_Store1")
   user                                                           user?                @relation("userTouser_digitalSignatureUser_idUser", fields: [digitalSignatureUser_idUser], references: [idUser], onDelete: Restrict, onUpdate: Restrict, map: "fk_User_User1")
   appointments                                                   appointments[]
+  messages                                                       messages[]
   patient                                                        patient[]
   patientinvoice_patientinvoice_CreateBy_idUserTouser            patientinvoice[]     @relation("patientinvoice_CreateBy_idUserTouser")
   patientinvoice_patientinvoice_SalesRepTouser                   patientinvoice[]     @relation("patientinvoice_SalesRepTouser")
@@ -798,6 +804,7 @@ model user {
   patientinvoice_patientinvoice_providerUser_idUserTouser        patientinvoice[]     @relation("patientinvoice_providerUser_idUserTouser")
   patientinvoice_patientinvoice_referringUser_idUserTouser       patientinvoice[]     @relation("patientinvoice_referringUser_idUserTouser")
   patientinvoiceitem                                             patientinvoiceitem[]
+  schedule                                                       schedule[]
   storeopeninghours                                              storeopeninghours[]
   other_user                                                     user[]               @relation("userTouser_digitalSignatureUser_idUser")
   userprivileges                                                 userprivileges[]
@@ -884,4 +891,17 @@ model userprofile {
   discounts                     Boolean          @default(false)
   referralLetters               Int              @default(0)
   userprivileges                userprivileges[]
+}
+
+model messages {
+  conversationID Int      @id @unique(map: "conversationID_UNIQUE")
+  sender         Int?
+  receiver       Int?
+  chat           String?  @db.VarChar(300)
+  msg_timeStamp  DateTime @default(now()) @db.Timestamp(0)
+  read_receits   Boolean?
+  user_id        Int?
+  user           user?    @relation(fields: [user_id], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "user_id")
+
+  @@index([user_id], map: "user_id_idx")
 }
