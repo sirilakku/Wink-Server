@@ -19,10 +19,13 @@ router.get("/positions/store/:storeId", async (req, res) => {
 // })
 
 //Get all schedules in a period in a store
-router.get("/store/:storeId", async (req, res) => {
+router.get("/week", async (req, res) => {
   //All employee Schedule
-  const storeId = req.params.storeId * 1;
-  const allSchedules = await getAllSchedulesByStore(storeId);
+  //utc time
+  const startDayofWeek = req.query.startDay;
+  const storeId = req.query.storeId * 1;
+  const allSchedules = await getAllSchedulesByStore(storeId, startDayofWeek);
+  // console.log(allSchedules, allSchedules)
 
   res.json(allSchedules);
 });

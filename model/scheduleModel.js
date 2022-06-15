@@ -1,8 +1,7 @@
+const moment = require("moment");
 const { PrismaClient } = require("@prisma/client");
 // using `prisma` in your application to read and write data in DB
 const prisma = new PrismaClient();
-
-
 
 const getPositionsByStore = async (storeId) => {
   const allPositions = await prisma.userprivileges.findMany({
@@ -18,29 +17,41 @@ const getPositionsByStore = async (storeId) => {
   return duplicateRemoved;
 };
 
-const getAllSchedulesByStore = async (storeId) => {
+const getAllSchedulesByStore = async (storeId, startDayofWeek) => {
+  const endDayofWeek = moment(startDayofWeek).clone().add(6, "days").format();
+  console.log("period", startDayofWeek, endDayofWeek);
+
   const allEmployees = await prisma.userprivileges.findMany({
     where: { Store_idStore: storeId },
-    select: {
-      User_idUser: true,
-      idUserPrivileges: true,
+    include: {
       userprofile: { select: { name: true } },
-      user: { select: { firstname: true, lastname: true } },
+      user: {
+        select: {
+          firstname: true,
+          lastname: true,
+          schedule: {
+            where: {
+              Store_idStore: storeId,
+              endtime: { gte: new Date(startDayofWeek) },
+              starttime: { lte: new Date(endDayofWeek) },
+            },
+          },
+        },
+      },
     },
   });
-  //   console.log("result", allEmployees);
 
   const res = [];
   allEmployees.map((emp) => {
     const dataObj = {
       userId: emp.User_idUser,
-      position: emp.userprofile.name,
       firstname: emp.user.firstname,
       lastname: emp.user.lastname,
+      position: emp.userprofile.name,
+      schedules: emp.user.schedule,
     };
-    res.push(dataObj);
+    emp?.user.schedule.length != 0 && res.push(dataObj);
   });
-  //   console.log(res);
   return res;
 };
 
