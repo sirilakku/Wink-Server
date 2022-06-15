@@ -71,6 +71,7 @@ router.get("/logout", (req, res) => {
 });
 
 router.get("/loggedInUser", (req, res) => {
+  if (req.user) {
   const userToSend = {
     username: req.user.username,
     firstname: req.user.firstname,
@@ -79,6 +80,8 @@ router.get("/loggedInUser", (req, res) => {
     id: req.user.idUser,
   };
   res.send(userToSend);
+  } else { res.send(null); }
 });
+
 
 module.exports = router;
