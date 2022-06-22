@@ -4,6 +4,7 @@ const projectRoutes = require("./server/routes/ProjectRoutes")
 const scheduleRoutes = require("./server/routes/ScheduleRoutes")
 const authRoutes = require("./server/routes/authRoutes")
 const userRoutes = require("./server/routes/userRoutes")
+const messageRoutes = require("./server/routes/messageRoutes")
 
 const passport = require("passport");
 const session = require("express-session");
@@ -18,6 +19,7 @@ app.use("/api", projectRoutes)
 app.use("/api", authRoutes)
 app.use("/api/schedule", scheduleRoutes)
 app.use("/api", userRoutes)
+app.use("/api", messageRoutes)
 
 const PORT=4000
 function echoPortNumber(){

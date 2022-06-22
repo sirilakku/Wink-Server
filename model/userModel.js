@@ -27,6 +27,7 @@ let userStoreSelections = async (id) => {
         select: {
           name: true,
           timeZone: true,
+          province: true,
         },
       },
       userprofile: {

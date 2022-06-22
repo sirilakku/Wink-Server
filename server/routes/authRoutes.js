@@ -20,7 +20,7 @@ passport.use(
       if (!isActive) {
         return done(null, false);
       }
-      
+
       const userToSend = {
         username: user.username,
         firstname: user.firstname,
@@ -64,24 +64,25 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-  req.logout(req.user, err => {
-    if(err) return next(err);
+  req.logout(req.user, (err) => {
+    if (err) return next(err);
     res.redirect("/");
   });
 });
 
 router.get("/loggedInUser", (req, res) => {
   if (req.user) {
-  const userToSend = {
-    username: req.user.username,
-    firstname: req.user.firstname,
-    lastname: req.user.lastname,
-    inactive: req.user.inactive,
-    id: req.user.idUser,
-  };
-  res.send(userToSend);
-  } else { res.send(null); }
+    const userToSend = {
+      username: req.user.username,
+      firstname: req.user.firstname,
+      lastname: req.user.lastname,
+      inactive: req.user.inactive,
+      id: req.user.idUser,
+    };
+    res.json(userToSend);
+  } else {
+    res.status(400).send(null);
+  }
 });
-
 
 module.exports = router;
