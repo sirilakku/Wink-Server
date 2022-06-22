@@ -25,29 +25,35 @@ const getAllSchedulesByStore = async (storeId, startDay, endDay) => {
         },
       },
     },
+    orderBy:{userprofile:{name:'asc'}},
   });
-  // console.log('res', res)
+  // console.log('res', allEmployees)
   return allEmployees;
 };
 
-// const getStoreHours = async (storeId) => {
-//   // const storeHours = await prisma.storeopeninghours.findMany();
-//   const storeHours = await prisma.storeopeninghours.findMany({
-//     where: { Store_idStore: storeId },
-//   });
-//   return storeHours
-// };
-
-// const getUserSummaryData = async (previlegesId) => {
-//   const mySummaryData = await prisma.userprivileges.findUnique({
-//     where: { idUserPrivileges: previlegesId },
-//     select: {
-//       User_idUser: true,
-//       idUserPrivileges: true,
-//       userprofile: { select: { name: true } },
-//       user: { select: { firstname: true, lastname: true } },
-//     },
-//   });
-//   return mySummaryData;
-// };
-module.exports =  getAllSchedulesByStore;
+const getMySchedulesFrom =async(storeId, myId, from)=>{
+  const onlyMy = await prisma.userprivileges.findMany({
+    where: { Store_idStore: storeId, User_idUser:myId },
+    select: {
+      User_idUser: true,
+      userprofile: { select: { name: true } },
+      user: {
+        select: {
+          firstname: true,
+          lastname: true,
+          inactive: true,
+          schedule: {
+            where: {
+              Store_idStore: storeId,
+              starttime: { gte: new Date(from) },
+            },
+            select: { workcode: true, starttime: true, endtime: true },
+          },
+        },
+      },
+    }
+  });
+  // console.log(onlyMy)
+  return onlyMy;
+}
+module.exports =  {getAllSchedulesByStore, getMySchedulesFrom};
