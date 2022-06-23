@@ -1,6 +1,7 @@
 const {
   getAllSchedulesByStore,
   getMySchedulesFrom,
+  getSchedulesToSwap,
 } = require("../../model/scheduleModel");
 
 let express = require("express");
@@ -9,11 +10,12 @@ const moment = require("moment");
 
 const formatSchedData = (data) => {
   const res = [];
-  data.map((emp) => {
+  data?.map((emp) => {
     const dataObj = {
       userId: emp.User_idUser,
       firstname: emp.user.firstname,
       lastname: emp.user.lastname,
+      positionId: emp.userprofile.idUserProfile,
       position: emp.userprofile.name,
       schedules: emp.user.schedule,
     };
@@ -56,7 +58,7 @@ router.get("/day", async (req, res) => {
   res.json(daySchedsData);
 });
 
-router.get("/mySchedules", async (req, res) => {
+router.get("/shiftswap", async (req, res) => {
   const storeId = req.query.storeId * 1;
   const myId = req.query.myId*1;
   const from = req.query.from;
@@ -65,7 +67,15 @@ router.get("/mySchedules", async (req, res) => {
   console.log("myschedule", storeId, myId, from);
   const scheduleData = await getMySchedulesFrom(storeId, myId, day);
   const mySchedules = formatSchedData(scheduleData)[0];
-  res.json(mySchedules)
+  const schedulesToSwap = await getSchedulesToSwap(storeId, myId, mySchedules.positionId, day);
+  // console.log("a",schedulesToSwap)
+  const othersSchedules = formatSchedData(schedulesToSwap)
+  res.json({mySchedules:mySchedules,schedulestoSwap:othersSchedules})
 });
 
+router.post('/shiftswap', async (req,res)=>{
+  const request = req.body;
+  console.log("Shift swap request", request)
+  res.status(200).json()
+})
 module.exports = router;
