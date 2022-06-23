@@ -23,6 +23,20 @@ const formatSchedData = (data) => {
   });
   return res;
 };
+
+router.get("/monthly", async (req,res) =>{
+  const storeId = req.query.storeId * 1;
+  const startOfMonth = req.query.firstDayOfMonth;
+  const endOfMonth = moment(startOfMonth,"YYYY-MM-DD")
+    .clone()
+    .endOf("months")
+    .format()
+    console.log("period in month", new Date(startOfMonth), endOfMonth);
+
+    // const allMonSchedules = await 
+})
+
+
 //Get all schedules in a period in a store
 router.get("/week", async (req, res) => {
   //All employee Schedule
@@ -44,6 +58,7 @@ router.get("/week", async (req, res) => {
 
   res.json(weekSchedData);
 });
+
 
 router.get("/day", async (req, res) => {
   //All emplyees schedules
