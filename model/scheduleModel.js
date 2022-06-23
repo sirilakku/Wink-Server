@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
   const my = await prisma.userprivileges.findMany({
-    where: { Store_idStore: storeId, User_idUser: userId  },
+    where: { Store_idStore: storeId, User_idUser: userId },
     select: {
       User_idUser: true,
       userprofile: { select: { name: true } },
@@ -32,7 +32,7 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
 };
 const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
   const exceptMine = await prisma.userprivileges.findMany({
-    where: { Store_idStore: storeId,  User_idUser: { not: userId }, },
+    where: { Store_idStore: storeId, User_idUser: { not: userId } },
     select: {
       User_idUser: true,
       userprofile: { select: { name: true } },
@@ -74,7 +74,12 @@ const getMySchedulesFrom = async (storeId, myId, from) => {
               Store_idStore: storeId,
               starttime: { gte: new Date(from) },
             },
-            select: { workcode: true, starttime: true, endtime: true },
+            select: {
+              idSchedule: true,
+              workcode: true,
+              starttime: true,
+              endtime: true,
+            },
           },
         },
       },
