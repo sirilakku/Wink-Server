@@ -3,9 +3,9 @@ const moment = require("moment");
 // using `prisma` in your application to read and write data in DB
 const prisma = new PrismaClient();
 
-const getAllSchedulesByStore = async (storeId, startDay, endDay) => {
-  const allEmployees = await prisma.userprivileges.findMany({
-    where: { Store_idStore: storeId },
+const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
+  const my = await prisma.userprivileges.findMany({
+    where: { Store_idStore: storeId, User_idUser: userId  },
     select: {
       User_idUser: true,
       userprofile: { select: { name: true } },
@@ -28,7 +28,34 @@ const getAllSchedulesByStore = async (storeId, startDay, endDay) => {
     orderBy: { userprofile: { name: "asc" } },
   });
   // console.log('res', allEmployees)
-  return allEmployees;
+  return my;
+};
+const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
+  const exceptMine = await prisma.userprivileges.findMany({
+    where: { Store_idStore: storeId,  User_idUser: { not: userId }, },
+    select: {
+      User_idUser: true,
+      userprofile: { select: { name: true } },
+      user: {
+        select: {
+          firstname: true,
+          lastname: true,
+          inactive: true,
+          schedule: {
+            where: {
+              Store_idStore: storeId,
+              endtime: { gte: new Date(startDay) },
+              starttime: { lte: new Date(endDay) },
+            },
+            select: { workcode: true, starttime: true, endtime: true },
+          },
+        },
+      },
+    },
+    orderBy: { userprofile: { name: "asc" } },
+  });
+  // console.log('res', allEmployees)
+  return exceptMine;
 };
 
 const getMySchedulesFrom = async (storeId, myId, from) => {
@@ -99,7 +126,8 @@ const getSchedulesToSwap = async (storeId, myId, positionId, from) => {
 };
 
 module.exports = {
-  getAllSchedulesByStore,
+  getUserSchedsByStore,
+  getCoworkersSchedsByStore,
   getMySchedulesFrom,
   getSchedulesToSwap,
 };
