@@ -6,7 +6,7 @@ router.post("/coworkers", async (req, res) => {
     console.log("req.id is", req.body);
     try {
       console.log("getting stores for id", req.body.storeId);
-      const coworkers = await getCoworkers(req.body.storeId, req.body.userPrivilegeId);
+      const coworkers = await getCoworkers(req.body.Store_idStore, req.body.UserProfile_idUserProfile);
       console.log("this is coworkers", coworkers)
       res.send(coworkers);
     } catch (error) {

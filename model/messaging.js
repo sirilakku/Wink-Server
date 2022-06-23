@@ -41,7 +41,7 @@ const getCoworkers = async (storeId, userPrivilegeId) => {
     } catch (error) {
       res.status(500).send(error);
     }
-  } else {
+  } else if (storeId){
     try {
       let coWorkers = await prisma.userprivileges.findMany({
         where: {
@@ -66,6 +66,8 @@ const getCoworkers = async (storeId, userPrivilegeId) => {
     } catch (error) {
       res.status(500).send(error);
     }
+  } else {
+    coWorkers = res.status(500).send("You are not authorized to view this page");
   }
 
   console.log("userbyname function", coWorkers);
