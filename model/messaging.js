@@ -22,7 +22,19 @@ const getCoworkers = async (storeId, userPrivilegeId) => {
       let coWorkers = await prisma.userprivileges.findMany({
         where: {
           Store_idStore: storeId,
-         
+        },
+        include: {
+          userprofile: {
+            select: {
+              name: true,
+            },
+          },
+          user: {
+            select: {
+              firstname: true,
+              lastname: true,
+            },
+          },
         },
       });
       return coWorkers;
@@ -36,6 +48,19 @@ const getCoworkers = async (storeId, userPrivilegeId) => {
           Store_idStore: storeId,
           UserProfile_idUserProfile: { in: [1002, 1000] },
         },
+        include: {
+            userprofile: {
+              select: {
+                name: true,
+              },
+            },
+            user: {
+              select: {
+                firstname: true,
+                lastname: true,
+              },
+            },
+          },
       });
       return coWorkers;
     } catch (error) {
