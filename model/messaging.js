@@ -18,17 +18,31 @@ const getCoworkers = async (storeId, userPrivilegeId) => {
   console.log("getting coworkers for userPrivilegeId", userPrivilegeId);
   if (userPrivilegeId === 1000 || userPrivilegeId === 1002) {
     console.log("getting coworkers for store", storeId);
-    let coWorkers = await prisma.userprivileges.findMany({
-      where: {
-        Store_idStore: storeId,
-        UserProfile_idUserProfile: { in: [1002, 1000] }, 
-       
-      },
-    });
-    return coWorkers;
+    try {
+      let coWorkers = await prisma.userprivileges.findMany({
+        where: {
+          Store_idStore: storeId,
+         
+        },
+      });
+      return coWorkers;
+    } catch (error) {
+      res.status(500).send(error);
+    }
   } else {
-    console.log("not an admin at", storeId);
+    try {
+      let coWorkers = await prisma.userprivileges.findMany({
+        where: {
+          Store_idStore: storeId,
+          UserProfile_idUserProfile: { in: [1002, 1000] },
+        },
+      });
+      return coWorkers;
+    } catch (error) {
+      res.status(500).send(error);
+    }
   }
+
   console.log("userbyname function", coWorkers);
   return coWorkers;
 };
