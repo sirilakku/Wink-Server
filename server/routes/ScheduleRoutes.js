@@ -27,14 +27,22 @@ const formatSchedData = (data) => {
 
 router.get("/monthly", async (req,res) =>{
   const storeId = req.query.storeId * 1;
-  const startOfMonth = req.query.firstDayOfMonth;
-  const endOfMonth = moment(startOfMonth,"YYYY-MM-DD")
+  const userId = req.query.userId * 1;
+  const startDayOfMonth = req.query.startOfMonth;
+  const endOfMonth = moment(startDayOfMonth,"YYYY-MM-DD")
     .clone()
-    .endOf("months")
+    .endOf("month")
     .format()
-    console.log("period in month", new Date(startOfMonth), endOfMonth);
+    console.log("period in month", new Date(startDayOfMonth), endOfMonth);
+   // console.log(" end period in month",  endOfMonth);
 
-    // const allMonSchedules = await 
+    const monthlySchedule = getUserSchedsByStore(storeId,userId,startDayOfMonth,endOfMonth);
+    const userData = await monthlySchedule
+    const monthlyUserData = formatSchedData(userData)
+    res.json({mySchedules:monthlyUserData})
+    // console.log("monthlyUserData",monthlyUserData)
+    
+
 })
 
 
@@ -68,6 +76,7 @@ router.get("/week", async (req, res) => {
   const weekUserData = formatSchedData(userData);
 const weekCoworkersData = formatSchedData(coworkersData);
   res.json({mySchedules: weekUserData, coworkersSchedules: weekCoworkersData});
+  
 });
 
 
