@@ -52,11 +52,11 @@ router.get("/week", async (req, res) => {
   const storeId = req.query.storeId * 1;
   const userId = req.query.userId * 1;
   const startDayofWeek = req.query.startDay;
-  const endDayofWeek = moment(startDayofWeek, "YYYY-MM-DD")
+  const endDayofWeek = moment(startDayofWeek)
     .clone()
-    .endOf("week")
+    .add(1,"weeks").utc()
     .format();
-  console.log("period", new Date(startDayofWeek), endDayofWeek);
+  console.log("period", startDayofWeek, endDayofWeek);
 
   const userSchedules = getUserSchedsByStore(
     storeId,
