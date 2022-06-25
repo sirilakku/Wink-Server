@@ -1,60 +1,103 @@
 const { PrismaClient } = require("@prisma/client");
-const moment = require("moment");
 // using `prisma` in your application to read and write data in DB
 const prisma = new PrismaClient();
 
-const getAllSchedulesByStore = async (storeId, startDay, endDay) => {
-  const allEmployees = await prisma.userprivileges.findMany({
-    where: { Store_idStore: storeId },
-    select: {
-      User_idUser: true,
-      userprofile: { select: { name: true } },
-      user: {
-        select: {
-          firstname: true,
-          lastname: true,
-          inactive: true,
-          schedule: {
-            where: {
-              Store_idStore: storeId,
-              endtime: { gte: new Date(startDay) },
-              starttime: { lte: new Date(endDay) },
+const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
+  try {
+    const my = await prisma.userprivileges.findMany({
+      where: { Store_idStore: storeId, User_idUser: userId },
+      select: {
+        User_idUser: true,
+        userprofile: { select: { name: true } },
+        user: {
+          select: {
+            firstname: true,
+            lastname: true,
+            inactive: true,
+            schedule: {
+              where: {
+                Store_idStore: storeId,
+                endtime: { gte: new Date(startDay) },
+                starttime: { lte: new Date(endDay) },
+              },
+              select: { workcode: true, starttime: true, endtime: true },
             },
-            select: { workcode: true, starttime: true, endtime: true },
           },
         },
       },
-    },
-    orderBy: { userprofile: { name: "asc" } },
-  });
-  // console.log('res', allEmployees)
-  return allEmployees;
+      orderBy: { userprofile: { name: "asc" } },
+    });
+    // console.log('res', allEmployees)
+    return my;
+  } catch (err) {
+    console.log("error to get user's schedules", err);
+  }
+};
+const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
+  try {
+    const exceptMine = await prisma.userprivileges.findMany({
+      where: { Store_idStore: storeId, User_idUser: { not: userId } },
+      select: {
+        User_idUser: true,
+        userprofile: { select: { name: true } },
+        user: {
+          select: {
+            firstname: true,
+            lastname: true,
+            inactive: true,
+            schedule: {
+              where: {
+                Store_idStore: storeId,
+                endtime: { gte: new Date(startDay) },
+                starttime: { lte: new Date(endDay) },
+              },
+              select: { workcode: true, starttime: true, endtime: true },
+            },
+          },
+        },
+      },
+      orderBy: { userprofile: { name: "asc" } },
+    });
+    // console.log('res', allEmployees)
+    return exceptMine;
+  } catch (err) {
+    console.log("error to get cowerkers' schedules ", err);
+  }
 };
 
 const getMySchedulesFrom = async (storeId, myId, from) => {
-  const onlyMy = await prisma.userprivileges.findMany({
-    where: { Store_idStore: storeId, User_idUser: myId },
-    select: {
-      User_idUser: true,
-      userprofile: { select: { idUserProfile: true, name: true } },
-      user: {
-        select: {
-          firstname: true,
-          lastname: true,
-          inactive: true,
-          schedule: {
-            where: {
-              Store_idStore: storeId,
-              starttime: { gte: new Date(from) },
+  try {
+    const onlyMy = await prisma.userprivileges.findMany({
+      where: { Store_idStore: storeId, User_idUser: myId },
+      select: {
+        User_idUser: true,
+        userprofile: { select: { idUserProfile: true, name: true } },
+        user: {
+          select: {
+            firstname: true,
+            lastname: true,
+            inactive: true,
+            schedule: {
+              where: {
+                Store_idStore: storeId,
+                starttime: { gte: new Date(from) },
+              },
+              select: {
+                idSchedule: true,
+                workcode: true,
+                starttime: true,
+                endtime: true,
+              },
             },
-            select: { workcode: true, starttime: true, endtime: true },
           },
         },
       },
-    },
-  });
-  // console.log(onlyMy)
-  return onlyMy;
+    });
+    // console.log(onlyMy)
+    return onlyMy;
+  } catch (err) {
+    console.log("error to get user schedules", err);
+  }
 };
 
 const getSchedulesToSwap = async (storeId, myId, positionId, from) => {
@@ -99,7 +142,8 @@ const getSchedulesToSwap = async (storeId, myId, positionId, from) => {
 };
 
 module.exports = {
-  getAllSchedulesByStore,
+  getUserSchedsByStore,
+  getCoworkersSchedsByStore,
   getMySchedulesFrom,
   getSchedulesToSwap,
 };

@@ -1,5 +1,6 @@
 const {
-  getAllSchedulesByStore,
+  getUserSchedsByStore,
+  getCoworkersSchedsByStore,
   getMySchedulesFrom,
   getSchedulesToSwap,
 } = require("../../model/scheduleModel");
@@ -23,59 +24,116 @@ const formatSchedData = (data) => {
   });
   return res;
 };
+
+router.get("/monthly", async (req,res) =>{
+  const storeId = req.query.storeId * 1;
+  const userId = req.query.userId * 1;
+  const startDayOfMonth = req.query.startOfMonth;
+  const endOfMonth = moment(startDayOfMonth,"YYYY-MM-DD")
+    .clone()
+    .endOf("month")
+    .format()
+    console.log("period in month", new Date(startDayOfMonth), endOfMonth);
+   // console.log(" end period in month",  endOfMonth);
+
+    const monthlySchedule = getUserSchedsByStore(storeId,userId,startDayOfMonth,endOfMonth);
+    const userData = await monthlySchedule
+    const monthlyUserData = formatSchedData(userData)
+    res.json({mySchedules:monthlyUserData})
+    // console.log("monthlyUserData",monthlyUserData)
+    
+
+})
+
+
 //Get all schedules in a period in a store
 router.get("/week", async (req, res) => {
   //All employee Schedule
   const storeId = req.query.storeId * 1;
+  const userId = req.query.userId * 1;
   const startDayofWeek = req.query.startDay;
-  const endDayofWeek = moment(startDayofWeek, "YYYY-MM-DD")
+  const endDayofWeek = moment(startDayofWeek)
     .clone()
-    .endOf("week")
+    .add(1,"weeks").utc()
     .format();
-  console.log("period", new Date(startDayofWeek), endDayofWeek);
+  console.log("period", startDayofWeek, endDayofWeek);
 
-  const allSchedules = await getAllSchedulesByStore(
+  const userSchedules = getUserSchedsByStore(
     storeId,
+    userId,
     startDayofWeek,
     endDayofWeek
   );
-
-  const weekSchedData =formatSchedData(allSchedules);
-
-  res.json(weekSchedData);
+  const coworkersSchedules = getCoworkersSchedsByStore(
+    storeId,
+    userId,
+    startDayofWeek,
+    endDayofWeek
+  );
+    const userData = await userSchedules;
+    const coworkersData= await coworkersSchedules;
+    // console.log('scheds', userData, coworkersData)
+  const weekUserData = formatSchedData(userData);
+const weekCoworkersData = formatSchedData(coworkersData);
+  res.json({mySchedules: weekUserData, coworkersSchedules: weekCoworkersData});
+  
 });
+
 
 router.get("/day", async (req, res) => {
   //All emplyees schedules
   const storeId = req.query.storeId * 1;
+  const userId =req.query.userId*1;
   const day = req.query.day;
 
   const startDay = moment(day, "YYYY-MM-DD").clone().startOf("day").format();
   const endDay = moment(day, "YYYY-MM-DD").clone().endOf("day").format();
   console.log("getting data from " + startDay + "to" + endDay);
-  const dayScheds = await getAllSchedulesByStore(storeId, startDay, endDay);
-  const daySchedsData =formatSchedData(dayScheds);
-  res.json(daySchedsData);
+
+  const userSchedules = getUserSchedsByStore(
+    storeId,
+    userId,
+    startDay,
+    endDay
+  );
+  const coworkersSchedules = getCoworkersSchedsByStore(
+    storeId,
+    userId,
+    startDay,
+    endDay
+  );
+    const userData = await userSchedules;
+    const coworkersData= await coworkersSchedules;
+    // console.log('scheds', userData, coworkersData)
+  const dayUserData = formatSchedData(userData);
+const dayCoworkersData = formatSchedData(coworkersData);
+  res.json({mySchedules: dayUserData, coworkersSchedules: dayCoworkersData});
+  
 });
 
 router.get("/shiftswap", async (req, res) => {
   const storeId = req.query.storeId * 1;
-  const myId = req.query.myId*1;
+  const myId = req.query.myId * 1;
   const from = req.query.from;
-  const day = moment(from,"YYYY-MM-DD" ).clone().format();
+  const day = moment(from, "YYYY-MM-DD").clone().format();
 
   console.log("myschedule", storeId, myId, from);
   const scheduleData = await getMySchedulesFrom(storeId, myId, day);
   const mySchedules = formatSchedData(scheduleData)[0];
-  const schedulesToSwap = await getSchedulesToSwap(storeId, myId, mySchedules.positionId, day);
+  const schedulesToSwap = await getSchedulesToSwap(
+    storeId,
+    myId,
+    mySchedules.positionId,
+    day
+  );
   // console.log("a",schedulesToSwap)
-  const othersSchedules = formatSchedData(schedulesToSwap)
-  res.json({mySchedules:mySchedules,schedulestoSwap:othersSchedules})
+  const othersSchedules = formatSchedData(schedulesToSwap);
+  res.json({ mySchedules: mySchedules, schedulestoSwap: othersSchedules });
 });
 
-router.post('/shiftswap', async (req,res)=>{
+router.post("/shiftswap", async (req, res) => {
   const request = req.body;
-  console.log("Shift swap request", request)
-  res.status(200).json()
-})
+  console.log("Shift swap request", request);
+  res.status(200).json();
+});
 module.exports = router;
