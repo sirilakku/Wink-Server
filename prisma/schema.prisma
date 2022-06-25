@@ -254,6 +254,7 @@ model patient {
   fax_strip                                                           String           @default(dbgenerated("()")) @db.VarChar(45)
   email_strip                                                         String           @default(dbgenerated("()")) @db.VarChar(45)
   PatientPrivacyConsentAcceptODTransfer                               Boolean          @default(false)
+  PatientSource_idPatientSource                                       Int?
   patient_patientTopatient_OtherInsuredPatient_idPatient              patient?         @relation("patientTopatient_OtherInsuredPatient_idPatient", fields: [OtherInsuredPatient_idPatient], references: [idPatient], onDelete: Restrict, onUpdate: Restrict, map: "fk_Patient_Patient5")
   patient_patientTopatient_PrimaryInsuredPatient_idPatient            patient?         @relation("patientTopatient_PrimaryInsuredPatient_idPatient", fields: [PrimaryInsuredPatient_idPatient], references: [idPatient], onDelete: Restrict, onUpdate: Restrict, map: "fk_Patient_Patient2")
   user                                                                user?            @relation(fields: [ReferringDoctor_idUser], references: [idUser], onDelete: Restrict, onUpdate: Restrict, map: "fk_Patient_User1")
@@ -296,6 +297,7 @@ model patient {
   @@index([ReferringDoctor_idUser], map: "fk_Patient_User1_idx")
   @@index([Reference1], map: "ref")
   @@index([Reference2], map: "ref2")
+  @@index([PatientSource_idPatientSource], map: "fk_Patient_PatientSource_idx")
 }
 
 model patientinvoice {
@@ -898,12 +900,13 @@ model userprofile {
   userprivileges                userprivileges[]
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model messages {
-  conversationID  Int             @id @unique(map: "conversationID_UNIQUE")
+  conversationID  Int             @id @default(autoincrement())
   sender          Int?
   receiver        Int?
   chat            String?         @db.VarChar(300)
-  msg_timeStamp   DateTime        @default(now()) @db.Timestamp(0)
+  msg_timeStamp   DateTime?       @db.DateTime(0)
   read_receits    Boolean?
   user_id         Int?
   user_privilages Int?

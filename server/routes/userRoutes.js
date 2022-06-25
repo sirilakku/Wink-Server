@@ -9,7 +9,7 @@ router.get("/", function (req, res, next) {
 
 // Get user store selections
 router.post("/storeselection", async (req, res) => {
-  console.log("req.id is", req.body);
+  // console.log("req.id is", req.body);
   try {
     console.log("getting stores for id", req.body.id);
     const stores = await userStoreSelections(req.body.id);
