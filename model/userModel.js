@@ -17,7 +17,7 @@ let userByName = async (username) => {
 };
 
 let userStoreSelections = async (id) => {
-  console.log("userstore selection id", id);
+  // console.log("userstore selection id", id);
   let userStores = await prisma.userprivileges.findMany({
     where: {
       User_idUser: id,
@@ -37,7 +37,7 @@ let userStoreSelections = async (id) => {
       },
     },
   });
-  console.log("userstore selection", userStores);
+  // console.log("userstore selection", userStores);
   return userStores;
 };
 

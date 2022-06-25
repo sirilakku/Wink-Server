@@ -41,7 +41,7 @@ const getCoworkers = async (storeId, userPrivilegeId) => {
     } catch (error) {
       res.status(500).send(error);
     }
-  } else if (storeId){
+  } else if (storeId) {
     try {
       let coWorkers = await prisma.userprivileges.findMany({
         where: {
@@ -49,28 +49,52 @@ const getCoworkers = async (storeId, userPrivilegeId) => {
           UserProfile_idUserProfile: { in: [1002, 1000] },
         },
         include: {
-            userprofile: {
-              select: {
-                name: true,
-              },
-            },
-            user: {
-              select: {
-                firstname: true,
-                lastname: true,
-              },
+          userprofile: {
+            select: {
+              name: true,
             },
           },
+          user: {
+            select: {
+              firstname: true,
+              lastname: true,
+            },
+          },
+        },
       });
       return coWorkers;
     } catch (error) {
       res.status(500).send(error);
     }
   } else {
-    coWorkers = res.status(500).send("You are not authorized to view this page");
+    coWorkers = res
+      .status(500)
+      .send("You are not authorized to view this page");
   }
 
   console.log("userbyname function", coWorkers);
   return coWorkers;
 };
-module.exports = { getCoworkers };
+
+const createConversation = async (userId, message, coworkerId) => {
+  console.log("creating conversation for user", userId);
+  console.log("creating conversation for message", message);
+  console.log("creating conversation for coworker", coworkerId);
+  try {
+    let conversation = await prisma.messages.create({
+      data: {
+        conversationID: 1,
+        sender: userId,
+        chat: message,
+        receiver: coworkerId,
+      },
+    });
+    console.log("this is conversation", conversation);
+    return conversation;
+  } catch (error) {
+    res.status(500).send(error);
+    console.log("error is", error);
+  }
+};
+
+module.exports = { getCoworkers, createConversation };
