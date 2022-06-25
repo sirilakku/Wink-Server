@@ -76,19 +76,25 @@ const getCoworkers = async (storeId, userPrivilegeId) => {
   return coWorkers;
 };
 
-const createConversation = async (userId, message, coworkerId) => {
-  console.log("creating conversation for user", userId);
-  console.log("creating conversation for message", message);
-  console.log("creating conversation for coworker", coworkerId);
+const createConversation = async (req) => {
+  console.log("creating conversation for sender", req.body.sender);
+  console.log("creating conversation for message",req.body.chat);
+  console.log("creating conversation for receiver", req.body.receiver);
   try {
-    let conversation = await prisma.messages.create({
-      data: {
-        conversationID: 1,
-        sender: userId,
-        chat: message,
-        receiver: coworkerId,
+    const conversation = await prisma.messages.create({
+      
+      data:  {
+        
+        sender: req.body.sender,
+        receiver: req.body.receiver,
+        chat: req.body.chat,
+        user_id: req.body.sender,
+        user_privilages: 1002,
+        msg_timeStamp: new Date(),
+        store: req.body.store,
+        read_receits: false,
       },
-    });
+  });
     console.log("this is conversation", conversation);
     return conversation;
   } catch (error) {

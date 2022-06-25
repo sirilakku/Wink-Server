@@ -20,44 +20,19 @@ router.post("/coworkers", async (req, res) => {
   }
 });
 
-// router.post("/createconversation", async (req, res) => {
-//   console.log("req.body is", req.body);
-//   try {
-//     console.log("creating conversation for id", req.body.userId);
-//     const conversation = await createConversation(
-//       req.body.userId,
-//       req.body.message,
-//       req.body.coworkerId,
-//     );
-//     res.send(conversation);
-//   } catch (error) {
-//     res.send(error);
-//   }
-// });
 
 
 router.post("/createconversation", async (req, res) => {
   console.log("req.body is", req.body);
   try {
     console.log("creating conversation for id", req.body.sender);
-    const conversation = await prisma.messages.create({
-      
-      data:  {
-        
-        sender: req.body.sender,
-        receiver: req.body.receiver,
-        chat: req.body.chat,
-        user_id: req.body.sender,
-        user_privilages: 1002,
-      },
-  });
+    const conversation = await createConversation(req);
 
-  console.log("this is conversation", conversation);
+    console.log("this is conversation", conversation);
 
     res.json(conversation);
-
   } catch (error) {
-     res.send(error);
+    res.send(error);
     console.log("error is", error);
   }
 });

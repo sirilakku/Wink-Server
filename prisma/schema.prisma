@@ -910,9 +910,11 @@ model messages {
   read_receits    Boolean?
   user_id         Int?
   user_privilages Int?
+  store           Int?
   user            user?           @relation(fields: [user_id], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "user_id")
   userprivileges  userprivileges? @relation(fields: [user_privilages], references: [UserProfile_idUserProfile], onDelete: NoAction, onUpdate: NoAction, map: "user_privilages")
 
   @@index([user_id], map: "user_id_idx")
   @@index([user_privilages], map: "user_privilages_idx")
+  @@index([store], map: "store_idx")
 }
