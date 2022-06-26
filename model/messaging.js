@@ -108,9 +108,9 @@ const getConversations = async (req) => {
   try {
     const conversations = await prisma.messages.findMany({
       where: {
-        sender: { in: [req.body.User_idUser, req.body.receiver] },
-        store: req.body.Store_idStore,
-        receiver: { in: [req.body.User_idUser, req.body.receiver] },
+        sender: { in: [req.body.user, req.body.receiver] },
+        store: req.body.store,
+        receiver: { in: [req.body.user, req.body.receiver] },
       },
     });
     console.log("this is conversations", conversations);
