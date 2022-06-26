@@ -103,4 +103,22 @@ const createConversation = async (req) => {
   }
 };
 
-module.exports = { getCoworkers, createConversation };
+const getConversations = async (req) => {
+  console.log("getting conversations for user", req.body.user_id);
+  try {
+    const conversations = await prisma.messages.findMany({
+      where: {
+        sender: req.body.User_idUser,
+        store: req.body.Store_idStore,
+      },
+    });
+    console.log("this is conversations", conversations);
+    return conversations;
+  } catch (error) {
+    res.status(500).send(error);
+    console.log("error is", error);
+  }
+}
+
+
+module.exports = { getCoworkers, createConversation, getConversations };
