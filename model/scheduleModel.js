@@ -20,7 +20,7 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
                 endtime: { gte: new Date(startDay) },
                 starttime: { lte: new Date(endDay) },
               },
-              select: { workcode: true, starttime: true, endtime: true },
+              // select: { workcode: true, starttime: true, endtime: true },
             },
           },
         },
@@ -39,6 +39,7 @@ const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
       where: { Store_idStore: storeId, User_idUser: { not: userId } },
       select: {
         User_idUser: true,
+        Store_idStore: true,
         userprofile: { select: { name: true } },
         user: {
           select: {
@@ -71,6 +72,7 @@ const getMySchedulesFrom = async (storeId, myId, from) => {
       where: { Store_idStore: storeId, User_idUser: myId },
       select: {
         User_idUser: true,
+        Store_idStore: true,
         userprofile: { select: { idUserProfile: true, name: true } },
         user: {
           select: {
@@ -81,12 +83,6 @@ const getMySchedulesFrom = async (storeId, myId, from) => {
               where: {
                 Store_idStore: storeId,
                 starttime: { gte: new Date(from) },
-              },
-              select: {
-                idSchedule: true,
-                workcode: true,
-                starttime: true,
-                endtime: true,
               },
             },
           },
@@ -140,10 +136,53 @@ const getSchedulesToSwap = async (storeId, myId, positionId, from) => {
     console.log("error to get Schedules to Swap", err);
   }
 };
+const createSched = async (
+  User_idUser,
+  Store_idStore,
+  starttime,
+  endtime,
+  workcode
+) => {
+  const data = await prisma.schedule.create({
+    data: {
+      User_idUser,
+      Store_idStore,
+      starttime,
+      endtime,
+      workcode,
+    },
+  });
+  // console.log("response", data);
+  return data
+};
+
+const editSched = async (
+  User_idUser,
+  Store_idStore,
+  starttime,
+  endtime,
+  workcode,
+  idSchedule
+) => {
+  const data = await prisma.schedule.update({
+    where: {idSchedule},
+    data: {
+      User_idUser,
+      Store_idStore,
+      starttime,
+      endtime,
+      workcode,
+    },
+  });
+  // console.log("response", data);
+  return data
+};
 
 module.exports = {
   getUserSchedsByStore,
   getCoworkersSchedsByStore,
   getMySchedulesFrom,
   getSchedulesToSwap,
+  createSched,
+  editSched
 };
