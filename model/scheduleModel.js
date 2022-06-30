@@ -153,7 +153,7 @@ const createSched = async (
     },
   });
   // console.log("response", data);
-  return data
+  return data;
 };
 
 const editSched = async (
@@ -165,17 +165,17 @@ const editSched = async (
   idSchedule
 ) => {
   const data = await prisma.schedule.update({
-    where: {idSchedule},
+    where: { idSchedule },
     data: {
       User_idUser,
       Store_idStore,
-      starttime,
-      endtime,
+      starttime:new Date(starttime),
+      endtime: new Date(endtime),
       workcode,
     },
   });
   // console.log("response", data);
-  return data
+  return data;
 };
 
 module.exports = {
@@ -184,5 +184,5 @@ module.exports = {
   getMySchedulesFrom,
   getSchedulesToSwap,
   createSched,
-  editSched
+  editSched,
 };
