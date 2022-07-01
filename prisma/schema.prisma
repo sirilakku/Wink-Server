@@ -920,7 +920,6 @@ model messages {
   @@index([store], map: "store_idx")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model employee_calendar_events {
   event_date   DateTime? @db.Date
   event_id     Int       @id @default(autoincrement())
@@ -929,8 +928,6 @@ model employee_calendar_events {
   federal      Boolean?
   observedDate DateTime? @db.Date
   province     String?   @db.VarChar(45)
-
-  @@ignore
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
