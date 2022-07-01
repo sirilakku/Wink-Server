@@ -22,6 +22,7 @@ const formatSchedData = (data) => {
       positionId: emp.userprofile.idUserProfile,
       position: emp.userprofile.name,
       schedules: emp.user.schedule,
+      availability: emp.user.employee_sched_availability[0]
     };
     emp.user.inactive === false && res.push(dataObj);
   });
@@ -78,7 +79,7 @@ router.get("/week", async (req, res) => {
   );
   const userData = await userSchedules;
   const coworkersData = await coworkersSchedules;
-  // console.log('scheds', userData, coworkersData)
+  console.log('scheds', userData, coworkersData)
   const weekUserData = formatSchedData(userData);
   const weekCoworkersData = formatSchedData(coworkersData);
   res.json({
@@ -162,5 +163,8 @@ router.patch("/scheduling", async (req, res) => {
     console.log("error while creating schedule", err);
   }
 });
+
+
+
 
 module.exports = router;
