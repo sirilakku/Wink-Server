@@ -22,7 +22,7 @@ const formatSchedData = (data) => {
       positionId: emp.userprofile.idUserProfile,
       position: emp.userprofile.name,
       schedules: emp.user.schedule,
-      availability: emp.user.employee_sched_availability[0] ||null
+      availability: emp.user.employee_sched_availability&&emp.user.employee_sched_availability[0] 
     };
     emp.user.inactive === false && res.push(dataObj);
   });

@@ -20,7 +20,7 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
                 endtime: { gte: new Date(startDay) },
                 starttime: { lte: new Date(endDay) },
               },
-              // select: { workcode: true, starttime: true, endtime: true },
+              
             },
             employee_sched_availability: {
               where: { Store_idStore: storeId },
@@ -55,7 +55,6 @@ const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
                 endtime: { gte: new Date(startDay) },
                 starttime: { lte: new Date(endDay) },
               },
-              // select: { workcode: true, starttime: true, endtime: true },
             },
             employee_sched_availability: {
               where: { Store_idStore: storeId },
