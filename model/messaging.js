@@ -97,6 +97,7 @@ const createConversation = async (req) => {
   });
     console.log("this is conversation", conversation);
     return conversation;
+    
   } catch (error) {
     res.status(500).send(error);
     console.log("error is", error);
@@ -104,19 +105,20 @@ const createConversation = async (req) => {
 };
 
 const getConversations = async (req) => {
-  console.log("getting conversations for user", req.body.user_id);
+  console.log("getting conversations for user", req.user);
   try {
     const conversations = await prisma.messages.findMany({
       where: {
-        sender: { in: [req.body.user, req.body.receiver] },
-        store: req.body.store,
-        receiver: { in: [req.body.user, req.body.receiver] },
+        sender: { in: [req.user, req.receiver] },
+        store: req.store,
+        receiver: { in: [req.user, req.receiver] },
       },
     });
     console.log("this is conversations", conversations);
     return conversations;
+    
   } catch (error) {
-    res.status(500).send(error);
+    // res.status(500).send(error);
     console.log("error is", error);
   }
 }

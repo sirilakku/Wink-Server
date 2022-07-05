@@ -8,6 +8,7 @@ const messageRoutes = require("./server/routes/messageRoutes")
 
 const passport = require("passport");
 const session = require("express-session");
+const { getConversations } = require("./model/messaging")
 app.use(session({ secret: "apple",
 cookie: { maxAge: 60000 }}));
 app.use(passport.initialize());
@@ -33,25 +34,37 @@ const io = require("socket.io")(server, {
     origin: "*",
   },
 });
-const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
+// const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
 
 io.on("connect_error", (err) => {
     console.log(`connect_error due to ${err.message}`);
   });
 
 io.on("connection", (socket) => {
+  
   // Join a conversation
-  const { roomId } = socket.handshake.query;
-  socket.join(roomId);
+  // const { roomId } = socket.handshake.query;
+  // socket.join(roomId);
 
-  // Listen for new messages
-  socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
-    io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, data);
-  });
+  // // Listen for new messages
+  // socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
+  //   io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, data);
+  // });
+
+  socket.on('get messages', (req) => {
+    console.log("a user connected");
+    console.log(req);
+    const conversations = getConversations(req) 
+      socket.emit("messages", conversations);
+    
+
+    
+  }
+  );
 
   // Leave the room if the user closes the socket
   socket.on("disconnect", () => {
-    socket.leave(roomId);
+    // socket.leave(roomId);
   });
 });
 
