@@ -98,7 +98,7 @@ const createConversation = async (req) => {
         read_receits: false,
       },
   });
-    console.log("this is conversation", conversation);
+    // console.log("this is conversation", conversation);
     return conversation;
   } catch (error) {
     res.status(500).send(error);
@@ -107,7 +107,7 @@ const createConversation = async (req) => {
 };
 
 const getConversations = async (req) => {
-  console.log("getting conversations for user", req.body.user_id);
+  console.log("getting conversations for user", req.body.user);
   try {
     const conversations = await prisma.messages.findMany({
       where: {
@@ -116,7 +116,7 @@ const getConversations = async (req) => {
         receiver: { in: [req.body.user, req.body.receiver] },
       },
     });
-    console.log("this is conversations", conversations);
+    // console.log("this is conversations", conversations);
     return conversations;
   } catch (error) {
     res.status(500).send(error);
@@ -125,7 +125,7 @@ const getConversations = async (req) => {
 }
 
 const getMessages = async (req) => {
-  console.log("getting conversations for user", req.user);
+  // console.log("getting conversations for user", req.user);
   try {
     const conversations = await prisma.messages.findMany({
       where: {

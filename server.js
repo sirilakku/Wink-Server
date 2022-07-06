@@ -39,11 +39,13 @@ const io = require("socket.io")(server, {
 });
 // const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
 
+let connectedUsers = {};
+
 io.on("connect_error", (err) => {
   console.log(`connect_error due to ${err.message}`);
 });
 
-io.on("connect", (socket) => {
+io.sockets.on("connect", (socket) => {
   // Join a conversation
   // const { roomId } = socket.handshake.query;
   // socket.join(roomId);
@@ -52,75 +54,49 @@ io.on("connect", (socket) => {
   // socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
   //   io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, data);
   // });
-  console.log("socket is connected", socket.id);
-  // socket.on("chat", (chat) => {
-  //   // console.log("socket chat", chat);
-
-  //   getMessages(chat)
-  //     .then((messages) => {
-  //       console.log("messages", messages);
-  //       if (messages.readrecits === false) {
-  //         socket.to("emitting messages", messages);
-  //       updateMessages(chat);
-
-  //     }})
-  //     .catch((err) => {
-  //       console.log("error is", err);
-  //     });
-  //   // socket.emit("get messages", getMessages(chat));
-  // });
-
-  // socket.on("chat", (chat) => {
-  //   // console.log("socket chat", chat);
-  //   updateMessages(chat)
-  // })
-  //     .then((messages) => {
-  //       // console.log("messages", messages);
-  //       socket.emit("emitting messages", messages);
-  //     })
-  //     .catch((err) => {
-  //       console.log("error is", err);
-  //     });
-  //   // socket.emit("get messages", getMessages(chat));
-  // });
-
+  // connectedUsers[socket.id] = socket;
+  // console.log("connected users", connectedUsers);
+  // console.log("socket is connected", socket.id);
+  // socket.emit("connected", socket.id);
+  // socket.on("join", (data) => {
+  //   // const { roomId } = data;
+socket.on('join', (data) => {
+  socket.join(data)
+  console.log(`${data} joined the room`)
+}
+   
+    )
+  
   socket.on("chat", (chat) => {
     // console.log("socket chat", chat);
     updateMessages(chat)
       .then((messages) => {
-        console.log("messages", messages);
+        // console.log("messages", messages);
       })
       .catch((err) => {
         console.log("error is", err);
       });
   });
 
-  //   getMessages(chat)
-  //     .then((messages) => {
-  //       console.log("messages", messages);
-  //       if (messages.readrecits === false) {
-  //         socket.to("emitting messages", messages);
-  //       updateMessages(chat);
+  socket.on("notify", (data) => {
+    console.log("socket notify", data);
+    io.in("socket").emit("notification", data);
+  }
+    )
 
-  //     }})
-  //     .catch((err) => {
-  //       console.log("error is", err);
-  //     });
-  //   // socket.emit("get messages", getMessages(chat));
+
+  // socket.on("chat", (chat) => {
+  //   // console.log("socket chat", chat);
+  //   updateMessages(chat);
   // });
 
-  socket.on("chat", (chat) => {
-    // console.log("socket chat", chat);
-    updateMessages(chat);
-  });
+  // socket.on("user", (user) => {
+  //   console.log("user socket", user);
+  // });
 
-  socket.on("user", (user) => {
-    console.log("user socket", user);
-  });
-
-  socket.on("join", (user) => {
-    console.log("user socket", user);
-  });
+  // socket.on("join", (user) => {
+  //   console.log("user socket", user);
+  // });
 
   // Leave the room if the user closes the socket
   socket.on("disconnect", () => {
