@@ -172,9 +172,9 @@ const getNotifications = async (req) => {
 
     const notifications = await prisma.messages.findMany({
       where: {
-        receiver: req.user,
+        receiver: req.body.user,
         read_receits: false,
-        store: req.store,
+        store: req.body.store,
       },
     });
     console.log("this is notifications", notifications.length);
