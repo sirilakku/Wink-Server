@@ -38,18 +38,16 @@ router.get("/monthly", async (req, res) => {
     .endOf("month")
     .format();
   console.log("period in month", new Date(startDayOfMonth), endOfMonth);
-  // console.log(" end period in month",  endOfMonth);
-
-  const monthlySchedule = getUserSchedsByStore(
+  const monthlySchedule = await getUserSchedsByStore(
     storeId,
     userId,
     startDayOfMonth,
     endOfMonth
   );
-  const userData = await monthlySchedule;
-  const monthlyUserData = formatSchedData(userData);
+  console.log("monthlySchedule",monthlySchedule)
+  const monthlyUserData = formatSchedData(monthlySchedule);
   res.json({ mySchedules: monthlyUserData });
-  // console.log("monthlyUserData",monthlyUserData)
+   //console.log("monthlyUserData",monthlyUserData)
 });
 
 //Get all schedules in a period in a store
