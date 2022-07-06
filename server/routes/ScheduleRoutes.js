@@ -22,7 +22,7 @@ const formatSchedData = (data) => {
       positionId: emp.userprofile.idUserProfile,
       position: emp.userprofile.name,
       schedules: emp.user.schedule,
-      availability: emp.user.employee_sched_availability[0] ||null
+      availability: emp.user.employee_sched_availability&&emp.user.employee_sched_availability[0] 
     };
     emp.user.inactive === false && res.push(dataObj);
   });
@@ -139,10 +139,10 @@ router.post("/shiftswap", async (req, res) => {
 
 router.post("/scheduling", async (req, res) => {
   try {
-    const { User_idUser, Store_idStore, starttime, endtime, workcode } =
+    const { User_idUser, Store_idStore, starttime, endtime, workcode,archived } =
       req.body;
     console.log("creating schedule with", req.body);
-    await createSched(User_idUser, Store_idStore, starttime, endtime, workcode);
+    await createSched(User_idUser, Store_idStore, starttime, endtime, workcode,archived);
 
     res.status(200).json({ message: "success" });
   } catch (err) {
@@ -151,10 +151,10 @@ router.post("/scheduling", async (req, res) => {
 });
 router.patch("/scheduling", async (req, res) => {
   try {
-    const { User_idUser, Store_idStore, starttime, endtime, workcode , idSchedule} =
+    const { User_idUser, Store_idStore, starttime, endtime, workcode , idSchedule,archived} =
       req.body;
     console.log("editing schedule to", req.body);
-    await editSched(User_idUser, Store_idStore, starttime, endtime, workcode, idSchedule);
+    await editSched(User_idUser, Store_idStore, starttime, endtime, workcode, idSchedule,archived);
 
     res.status(200).json({ message: "success" });
   } catch (err) {
