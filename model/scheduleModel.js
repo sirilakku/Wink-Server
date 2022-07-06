@@ -19,6 +19,7 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
                 Store_idStore: storeId,
                 endtime: { gte: new Date(startDay) },
                 starttime: { lte: new Date(endDay) },
+                archived: false
               },
               
             },
@@ -54,6 +55,7 @@ const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
                 Store_idStore: storeId,
                 endtime: { gte: new Date(startDay) },
                 starttime: { lte: new Date(endDay) },
+                archived: false
               },
             },
             employee_sched_availability: {
@@ -88,6 +90,7 @@ const getMySchedulesFrom = async (storeId, myId, from) => {
               where: {
                 Store_idStore: storeId,
                 starttime: { gte: new Date(from) },
+                archived: false
               },
             },
           },
@@ -121,13 +124,9 @@ const getSchedulesToSwap = async (storeId, myId, positionId, from) => {
               where: {
                 Store_idStore: storeId,
                 starttime: { gte: new Date(from) },
+                archived: false
               },
-              select: {
-                idSchedule: true,
-                workcode: true,
-                starttime: true,
-                endtime: true,
-              },
+              
             },
           },
         },
@@ -146,7 +145,8 @@ const createSched = async (
   Store_idStore,
   starttime,
   endtime,
-  workcode
+  workcode,
+  archived
 ) => {
   const data = await prisma.schedule.create({
     data: {
@@ -155,6 +155,7 @@ const createSched = async (
       starttime,
       endtime,
       workcode,
+      archived
     },
   });
   // console.log("response", data);
@@ -167,7 +168,8 @@ const editSched = async (
   starttime,
   endtime,
   workcode,
-  idSchedule
+  idSchedule,
+  archived
 ) => {
   const data = await prisma.schedule.update({
     where: { idSchedule },
@@ -177,6 +179,7 @@ const editSched = async (
       starttime: new Date(starttime),
       endtime: new Date(endtime),
       workcode,
+      archived
     },
   });
   // console.log("response", data);
