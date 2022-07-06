@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 const getCalEventsForMonth = async (startOfHoliday, endOfHoliday) => {
   try {
     const result =
-      await prisma.$queryRaw`select nameEn from employee_calendar_events where event_date between ${startOfHoliday} and ${endOfHoliday}`;
+      await prisma.$queryRaw`select distinct nameEn,event_date from employee_calendar_events where event_date between ${startOfHoliday} and ${endOfHoliday}`;
     // const monEvents = await prisma.employee_calendar_events.findMany({
     //   where: { event_date: startOfHoliday, event_date: endOfHoliday },
     //   select: {
