@@ -4,6 +4,8 @@ const {
   getCoworkers,
   createConversation,
   getConversations,
+  updateMessages,
+  getNotifications,
 } = require("../../model/messaging");
 const { PrismaClient } = require("@prisma/client");
 
@@ -54,6 +56,18 @@ router.post("/getconversation", async (req, res) => {
     }
   } else {
     res.status(400).send("No receiver");
+  }
+});
+
+router.post("/notifications", async (req, res) => {
+  try {
+    console.log("getting conversation for id", req.body);
+    const notification = await getNotifications(req);
+    console.log("this is the notification", notification);
+    res.json(notification);
+  } catch (error) {
+    res.send(error);
+    console.log("error is", error);
   }
 });
 

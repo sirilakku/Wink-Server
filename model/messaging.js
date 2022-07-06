@@ -166,7 +166,26 @@ const updateMessages = async (req) => {
   }
 }
 
+const getNotifications = async (req) => {
+  console.log("getting notifications for user", req.user);
+  try {
+
+    const notifications = await prisma.messages.findMany({
+      where: {
+        receiver: req.user,
+        read_receits: false,
+        store: req.store,
+      },
+    });
+    console.log("this is notifications", notifications.length);
+    return notifications.length;
+
+  } catch (error) {
+    res.status(500).send(error);
+    console.log("error is", error);
+  }
+}
 
 
 
-module.exports = { getCoworkers, createConversation, getConversations, getMessages, updateMessages };
+module.exports = { getCoworkers, createConversation, getConversations, getMessages, updateMessages, getNotifications };
