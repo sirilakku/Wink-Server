@@ -79,7 +79,7 @@ router.get("/week", async (req, res) => {
   );
   const userData = await userSchedules;
   const coworkersData = await coworkersSchedules;
-  console.log('scheds', userData, coworkersData)
+  // console.log('scheds', userData, coworkersData)
   const weekUserData = formatSchedData(userData);
   const weekCoworkersData = formatSchedData(coworkersData);
   res.json({

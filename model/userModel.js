@@ -12,7 +12,7 @@ let userByName = async (username) => {
       username: username,
     },
   });
-  console.log("userbyname function", userByName);
+  // console.log("userbyname function", userByName);
   return userByName;
 };
 
