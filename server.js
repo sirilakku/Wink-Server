@@ -1,29 +1,33 @@
-const express = require("express")
-const app = express()
-const projectRoutes = require("./server/routes/ProjectRoutes")
-const scheduleRoutes = require("./server/routes/ScheduleRoutes")
-const authRoutes = require("./server/routes/authRoutes")
-const userRoutes = require("./server/routes/userRoutes")
-const messageRoutes = require("./server/routes/messageRoutes")
+const express = require("express");
+const app = express();
+const projectRoutes = require("./server/routes/ProjectRoutes");
+const scheduleRoutes = require("./server/routes/ScheduleRoutes");
+const authRoutes = require("./server/routes/authRoutes");
+const userRoutes = require("./server/routes/userRoutes");
+const messageRoutes = require("./server/routes/messageRoutes");
 
 const passport = require("passport");
 const session = require("express-session");
-app.use(session({ secret: "apple",
-cookie: { maxAge: 60000 }}));
+const {
+  getConversations,
+  getMessages,
+  updateMessages,
+} = require("./model/messaging");
+app.use(session({ secret: "apple", cookie: { maxAge: 60000 } }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(express.json())
-app.use("/api", projectRoutes)
+app.use(express.json());
+app.use("/api", projectRoutes);
 
-app.use("/api", authRoutes)
-app.use("/api/schedule", scheduleRoutes)
-app.use("/api", userRoutes)
-app.use("/api", messageRoutes)
+app.use("/api", authRoutes);
+app.use("/api/schedule", scheduleRoutes);
+app.use("/api", userRoutes);
+app.use("/api", messageRoutes);
 
-const PORT=4000
-function echoPortNumber(){
-    console.log(`Listening on port ${PORT}`)
+const PORT = 4000;
+function echoPortNumber() {
+  console.log(`Listening on port ${PORT}`);
 }
 
 //creating socket server for messenger
@@ -33,28 +37,96 @@ const io = require("socket.io")(server, {
     origin: "*",
   },
 });
-const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
+// const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
 
 io.on("connect_error", (err) => {
-    console.log(`connect_error due to ${err.message}`);
+  console.log(`connect_error due to ${err.message}`);
+});
+
+io.on("connect", (socket) => {
+  // Join a conversation
+  // const { roomId } = socket.handshake.query;
+  // socket.join(roomId);
+
+  // // Listen for new messages
+  // socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
+  //   io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, data);
+  // });
+  console.log("socket is connected", socket.id);
+  // socket.on("chat", (chat) => {
+  //   // console.log("socket chat", chat);
+
+  //   getMessages(chat)
+  //     .then((messages) => {
+  //       console.log("messages", messages);
+  //       if (messages.readrecits === false) {
+  //         socket.to("emitting messages", messages);
+  //       updateMessages(chat);
+
+  //     }})
+  //     .catch((err) => {
+  //       console.log("error is", err);
+  //     });
+  //   // socket.emit("get messages", getMessages(chat));
+  // });
+
+  // socket.on("chat", (chat) => {
+  //   // console.log("socket chat", chat);
+  //   updateMessages(chat)
+  // })
+  //     .then((messages) => {
+  //       // console.log("messages", messages);
+  //       socket.emit("emitting messages", messages);
+  //     })
+  //     .catch((err) => {
+  //       console.log("error is", err);
+  //     });
+  //   // socket.emit("get messages", getMessages(chat));
+  // });
+
+  socket.on("chat", (chat) => {
+    // console.log("socket chat", chat);
+    updateMessages(chat)
+      .then((messages) => {
+        console.log("messages", messages);
+      })
+      .catch((err) => {
+        console.log("error is", err);
+      });
   });
 
-io.on("connection", (socket) => {
-  // Join a conversation
-  const { roomId } = socket.handshake.query;
-  socket.join(roomId);
+  //   getMessages(chat)
+  //     .then((messages) => {
+  //       console.log("messages", messages);
+  //       if (messages.readrecits === false) {
+  //         socket.to("emitting messages", messages);
+  //       updateMessages(chat);
 
-  // Listen for new messages
-  socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
-    io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, data);
+  //     }})
+  //     .catch((err) => {
+  //       console.log("error is", err);
+  //     });
+  //   // socket.emit("get messages", getMessages(chat));
+  // });
+
+  socket.on("chat", (chat) => {
+    // console.log("socket chat", chat);
+    updateMessages(chat);
+  });
+
+  socket.on("user", (user) => {
+    console.log("user socket", user);
+  });
+
+  socket.on("join", (user) => {
+    console.log("user socket", user);
   });
 
   // Leave the room if the user closes the socket
   socket.on("disconnect", () => {
-    socket.leave(roomId);
+    // socket.leave(roomId);
+    console.log("socket is disconnected", socket.id);
   });
 });
-
-
 
 server.listen(PORT, echoPortNumber);

@@ -1,4 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
+const { Socket } = require("socket.io");
+
+
 
 const prisma = new PrismaClient();
 
@@ -121,5 +124,49 @@ const getConversations = async (req) => {
   }
 }
 
+const getMessages = async (req) => {
+  console.log("getting conversations for user", req.user);
+  try {
+    const conversations = await prisma.messages.findMany({
+      where: {
+        sender: { in: [req.user, req.receiver] },
+        store: req.store,
+        receiver: { in: [req.user, req.receiver] },
+      },
+    });
+    // console.log("this is conversations", conversations);
+    return conversations;
+    // io.emit("emitting messages", conversations);
+  } catch (error) {
+    res.status(500).send(error);
+    console.log("error is", error);
+  }
+}
 
-module.exports = { getCoworkers, createConversation, getConversations };
+const updateMessages = async (req) => {
+  console.log("updating conversations for user", req.user);
+  try {
+    const conversations = await prisma.messages.updateMany({
+      where: {
+        sender: req.receiver,
+        store: req.store,
+        receiver: req.user ,
+      },
+      data: {
+        read_receits: true,
+      },
+    });
+    // console.log("this is conversations", conversations);
+    // return conversations;
+    return conversations;
+    // io.emit("emitting messages", conversations);
+  } catch (error) {
+    res.status(500).send(error);
+    console.log("error is", error);
+  }
+}
+
+
+
+
+module.exports = { getCoworkers, createConversation, getConversations, getMessages, updateMessages };
