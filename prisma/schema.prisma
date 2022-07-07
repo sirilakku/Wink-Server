@@ -803,7 +803,8 @@ model user {
   appointments                                                   appointments[]
   employee_sched_availability                                    employee_sched_availability[]
   employee_shift_swap                                            employee_shift_swap[]
-  messages                                                       messages[]
+  messages_messages_senderTouser                                 messages[]                    @relation("messages_senderTouser")
+  messages_messages_storeTouser                                  messages[]                    @relation("messages_storeTouser")
   patient                                                        patient[]
   patientinvoice_patientinvoice_CreateBy_idUserTouser            patientinvoice[]              @relation("patientinvoice_CreateBy_idUserTouser")
   patientinvoice_patientinvoice_SalesRepTouser                   patientinvoice[]              @relation("patientinvoice_SalesRepTouser")
@@ -904,21 +905,23 @@ model userprofile {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model messages {
-  conversationID  Int             @id @default(autoincrement())
-  sender          Int?
-  receiver        Int?
-  chat            String?         @db.VarChar(300)
-  msg_timeStamp   DateTime?       @db.DateTime(0)
-  read_receits    Boolean?
-  user_id         Int?
-  user_privilages Int?
-  store           Int?
-  user            user?           @relation(fields: [user_id], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "user_id")
-  userprivileges  userprivileges? @relation(fields: [user_privilages], references: [UserProfile_idUserProfile], onDelete: NoAction, onUpdate: NoAction, map: "user_privilages")
+  conversationID             Int             @id @default(autoincrement())
+  sender                     Int?
+  receiver                   Int?
+  chat                       String?         @db.VarChar(300)
+  msg_timeStamp              DateTime?       @db.DateTime(0)
+  read_receits               Boolean?
+  user_id                    Int?
+  user_privilages            Int?
+  store                      Int?
+  user_messages_senderTouser user?           @relation("messages_senderTouser", fields: [sender], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "sender")
+  user_messages_storeTouser  user?           @relation("messages_storeTouser", fields: [store], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "user_id")
+  userprivileges             userprivileges? @relation(fields: [user_privilages], references: [UserProfile_idUserProfile], onDelete: NoAction, onUpdate: NoAction, map: "user_privilages")
 
-  @@index([user_id], map: "user_id_idx")
+  @@index([user_id, sender], map: "user_id_idx")
   @@index([user_privilages], map: "user_privilages_idx")
   @@index([store], map: "store_idx")
+  @@index([sender], map: "sender_idx")
 }
 
 model employee_calendar_events {
