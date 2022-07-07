@@ -8,6 +8,7 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
       where: { Store_idStore: storeId, User_idUser: userId },
       select: {
         User_idUser: true,
+        Store_idStore: true,
         userprofile: { select: { name: true } },
         user: {
           select: {
@@ -31,7 +32,7 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
       },
       orderBy: { userprofile: { name: "asc" } },
     });
-    console.log("res", my);
+    // console.log("res", my);
     return my;
   } catch (err) {
     console.log("error to get user's schedules", err);
