@@ -29,6 +29,14 @@ const formatSchedData = (data) => {
   return res;
 };
 
+
+//middleware to check admin
+const restrictTo = async(req,res,next)=>{
+  console.log("req",req.user)
+  next()
+}
+
+
 router.get("/monthly", async (req, res) => {
   const storeId = req.query.storeId * 1;
   const userId = req.query.userId * 1;
@@ -139,11 +147,13 @@ router.post("/shiftswap", async (req, res) => {
   res.status(200).json();
 });
 
-router.post("/scheduling", async (req, res) => {
+
+
+router.post("/scheduling",restrictTo, async (req, res) => {
   try {
     const { User_idUser, Store_idStore, starttime, endtime, workcode,archived } =
       req.body;
-    console.log("creating schedule with", req.body);
+    // console.log("creating schedule with", req.body);
     await createSched(User_idUser, Store_idStore, starttime, endtime, workcode,archived);
 
     res.status(200).json({ message: "success" });
