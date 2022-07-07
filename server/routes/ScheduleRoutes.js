@@ -32,7 +32,7 @@ const formatSchedData = (data) => {
 
 //middleware to check admin
 const restrictTo = async(req,res,next)=>{
-  console.log("req",req.user)
+  // console.log("req",req.user)
   next()
 }
 

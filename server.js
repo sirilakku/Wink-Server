@@ -9,11 +9,7 @@ const calendarEventsRoutes = require("./server/routes/calendarEventsRoutes")
 
 const passport = require("passport");
 const session = require("express-session");
-const {
-  getConversations,
-  getMessages,
-  updateMessages,
-} = require("./model/messaging");
+const { updateMessages } = require("./model/messaging");
 app.use(session({ secret: "apple", cookie: { maxAge: 60000 } }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -39,41 +35,23 @@ const io = require("socket.io")(server, {
     origin: "*",
   },
 });
-// const NEW_CHAT_MESSAGE_EVENT = "newChatMessage";
-
-let connectedUsers = {};
 
 io.on("connect_error", (err) => {
   console.log(`connect_error due to ${err.message}`);
 });
 
 io.sockets.on("connect", (socket) => {
-  // Join a conversation
-  // const { roomId } = socket.handshake.query;
-  // socket.join(roomId);
+  socket.on("join", (data) => {
+    socket.join(data);
+    console.log(`${data} joined the room`);
+  });
 
-  // // Listen for new messages
-  // socket.on(NEW_CHAT_MESSAGE_EVENT, (data) => {
-  //   io.in(roomId).emit(NEW_CHAT_MESSAGE_EVENT, data);
-  // });
-  // connectedUsers[socket.id] = socket;
-  // console.log("connected users", connectedUsers);
-  // console.log("socket is connected", socket.id);
-  // socket.emit("connected", socket.id);
-  // socket.on("join", (data) => {
-  //   // const { roomId } = data;
-socket.on('join', (data) => {
-  socket.join(data)
-  console.log(`${data} joined the room`)
-}
-   
-    )
-  
   socket.on("chat", (chat) => {
     // console.log("socket chat", chat);
     updateMessages(chat)
       .then((messages) => {
         // console.log("messages", messages);
+        io.in("socket").emit("read", messages);
       })
       .catch((err) => {
         console.log("error is", err);
@@ -83,22 +61,7 @@ socket.on('join', (data) => {
   socket.on("notify", (data) => {
     console.log("socket notify", data);
     io.in("socket").emit("notification", data);
-  }
-    )
-
-
-  // socket.on("chat", (chat) => {
-  //   // console.log("socket chat", chat);
-  //   updateMessages(chat);
-  // });
-
-  // socket.on("user", (user) => {
-  //   console.log("user socket", user);
-  // });
-
-  // socket.on("join", (user) => {
-  //   console.log("user socket", user);
-  // });
+  });
 
   // Leave the room if the user closes the socket
   socket.on("disconnect", () => {

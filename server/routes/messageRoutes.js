@@ -61,9 +61,9 @@ router.post("/getconversation", async (req, res) => {
 
 router.post("/notifications", async (req, res) => {
   try {
-    console.log("getting conversation for id", req.body);
+    // console.log("getting conversation for id", req.body);
     const notification = await getNotifications(req);
-    console.log("this is the notification", notification);
+    // console.log("this is the notification", notification);
     res.json(notification);
   } catch (error) {
     res.send(error);
