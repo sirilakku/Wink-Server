@@ -11,7 +11,7 @@ router.get("/", function (req, res, next) {
 router.post("/storeselection", async (req, res) => {
   // console.log("req.id is", req.body);
   try {
-    console.log("getting stores for id", req.body.id);
+    // console.log("getting stores for id", req.body.id);
     const stores = await userStoreSelections(req.body.id);
     res.send(stores);
   } catch (error) {

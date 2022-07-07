@@ -3,20 +3,11 @@ const { Socket } = require("socket.io");
 
 const prisma = new PrismaClient();
 
-// const getCoworkers = async (storeId) => {
-//   console.log("getting coworkers for store", storeId);
-//   const allEmployees = await prisma.userprivileges.findMany({
-//     where: { Store_idStore: storeId, },
 
-//   });
-//   console.log("this is coworkers", allEmployees)
-//   // console.log('res', res)
-//   return allEmployees;
-// };
 
 const getCoworkers = async (storeId, userPrivilegeId) => {
-  console.log("getting coworkers for store", storeId);
-  console.log("getting coworkers for userPrivilegeId", userPrivilegeId);
+  // console.log("getting coworkers for store", storeId);
+  // console.log("getting coworkers for userPrivilegeId", userPrivilegeId);
   // if (userPrivilegeId === 1000 || userPrivilegeId === 1002) {
   //   console.log("getting coworkers for store", storeId);
   try {
@@ -42,45 +33,16 @@ const getCoworkers = async (storeId, userPrivilegeId) => {
   } catch (error) {
     res.status(500).send(error);
   }
-  // } else if (storeId) {
-  //   try {
-  //     let coWorkers = await prisma.userprivileges.findMany({
-  //       where: {
-  //         Store_idStore: storeId,
-  //         UserProfile_idUserProfile: { in: [1002, 1000] },
-  //       },
-  //       include: {
-  //         userprofile: {
-  //           select: {
-  //             name: true,
-  //           },
-  //         },
-  //         user: {
-  //           select: {
-  //             firstname: true,
-  //             lastname: true,
-  //           },
-  //         },
-  //       },
-  // });
-  //     return coWorkers;
-  //   } catch (error) {
-  //     res.status(500).send(error);
-  //   }
-  // } else {
-  //   coWorkers = res
-  //     .status(500)
-  //     .send("You are not authorized to view this page");
-  // }
+
 
   console.log("userbyname function", coWorkers);
   return coWorkers;
 };
 
 const createConversation = async (req) => {
-  console.log("creating conversation for sender", req.body.sender);
-  console.log("creating conversation for message", req.body.chat);
-  console.log("creating conversation for receiver", req.body.receiver);
+  // console.log("creating conversation for sender", req.body.sender);
+  // console.log("creating conversation for message", req.body.chat);
+  // console.log("creating conversation for receiver", req.body.receiver);
   try {
     const conversation = await prisma.messages.create({
       data: {
@@ -103,7 +65,7 @@ const createConversation = async (req) => {
 };
 
 const getConversations = async (req) => {
-  console.log("getting conversations for user", req.body.user);
+  // console.log("getting conversations for user", req.body.user);
   try {
     const conversations = await prisma.messages.findMany({
       where: {
@@ -140,7 +102,7 @@ const getMessages = async (req) => {
 };
 
 const updateMessages = async (req) => {
-  console.log("updating conversations for user", req.user);
+  // console.log("updating conversations for user", req.user);
   try {
     const conversations = await prisma.messages.updateMany({
       where: {
@@ -161,7 +123,7 @@ const updateMessages = async (req) => {
 };
 
 const getNotifications = async (req) => {
-  console.log("getting notifications for user", req.user);
+  // console.log("getting notifications for user", req.user);
   try {
     const notifications = await prisma.messages.findMany({
       where: {
@@ -170,7 +132,7 @@ const getNotifications = async (req) => {
         store: req.body.store,
       },
     });
-    console.log("this is notifications", notifications.length);
+    // console.log("this is notifications", notifications.length);
     return notifications.length;
   } catch (error) {
     res.status(500).send(error);

@@ -29,7 +29,7 @@ passport.use(
         id: user.idUser,
       };
       // delete userToSend.password;
-      console.log("user after deleting password", userToSend);
+      // console.log("user after deleting password", userToSend);
       return done(null, userToSend);
     } catch (error) {
       return done(error, null);
@@ -38,15 +38,15 @@ passport.use(
 );
 
 passport.serializeUser(function (user, done) {
-  console.log("passport wants to store this user in a cookie", user);
+  // console.log("passport wants to store this user in a cookie", user);
   done(null, user.username);
 });
 
 passport.deserializeUser(async function (username, done) {
-  console.log(
-    "passport is trying to recover the user from the cookie",
-    username
-  );
+  // console.log(
+  //   "passport is trying to recover the user from the cookie",
+  //   username
+  // );
   try {
     const user = await userByName(username);
     if (!user) {
