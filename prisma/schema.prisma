@@ -14,6 +14,7 @@ model schedule {
   endtime             DateTime?             @default(dbgenerated("(0000-00-00 00:00:00)")) @db.Timestamp(0)
   User_idUser         Int?
   Store_idStore       Int?
+  archived            Boolean?              @default(false)
   store               store?                @relation(fields: [Store_idStore], references: [idStore], onDelete: NoAction, onUpdate: NoAction, map: "storeId")
   user                user?                 @relation(fields: [User_idUser], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "userId")
   employee_shift_swap employee_shift_swap[]

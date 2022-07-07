@@ -22,12 +22,20 @@ const formatSchedData = (data) => {
       positionId: emp.userprofile.idUserProfile,
       position: emp.userprofile.name,
       schedules: emp.user.schedule,
-      availability: emp.user.employee_sched_availability[0] ||null
+      availability: emp.user.employee_sched_availability&&emp.user.employee_sched_availability[0] 
     };
     emp.user.inactive === false && res.push(dataObj);
   });
   return res;
 };
+
+
+//middleware to check admin
+const restrictTo = async(req,res,next)=>{
+  console.log("req",req.user)
+  next()
+}
+
 
 router.get("/monthly", async (req, res) => {
   const storeId = req.query.storeId * 1;
@@ -38,18 +46,16 @@ router.get("/monthly", async (req, res) => {
     .endOf("month")
     .format();
   console.log("period in month", new Date(startDayOfMonth), endOfMonth);
-  // console.log(" end period in month",  endOfMonth);
-
-  const monthlySchedule = getUserSchedsByStore(
+  const monthlySchedule = await getUserSchedsByStore(
     storeId,
     userId,
     startDayOfMonth,
     endOfMonth
   );
-  const userData = await monthlySchedule;
-  const monthlyUserData = formatSchedData(userData);
+  console.log("monthlySchedule",monthlySchedule)
+  const monthlyUserData = formatSchedData(monthlySchedule);
   res.json({ mySchedules: monthlyUserData });
-  // console.log("monthlyUserData",monthlyUserData)
+   //console.log("monthlyUserData",monthlyUserData)
 });
 
 //Get all schedules in a period in a store
@@ -139,12 +145,14 @@ router.post("/shiftswap", async (req, res) => {
   res.status(200).json();
 });
 
-router.post("/scheduling", async (req, res) => {
+
+
+router.post("/scheduling",restrictTo, async (req, res) => {
   try {
-    const { User_idUser, Store_idStore, starttime, endtime, workcode } =
+    const { User_idUser, Store_idStore, starttime, endtime, workcode,archived } =
       req.body;
-    console.log("creating schedule with", req.body);
-    await createSched(User_idUser, Store_idStore, starttime, endtime, workcode);
+    // console.log("creating schedule with", req.body);
+    await createSched(User_idUser, Store_idStore, starttime, endtime, workcode,archived);
 
     res.status(200).json({ message: "success" });
   } catch (err) {
@@ -153,10 +161,10 @@ router.post("/scheduling", async (req, res) => {
 });
 router.patch("/scheduling", async (req, res) => {
   try {
-    const { User_idUser, Store_idStore, starttime, endtime, workcode , idSchedule} =
+    const { User_idUser, Store_idStore, starttime, endtime, workcode , idSchedule,archived} =
       req.body;
     console.log("editing schedule to", req.body);
-    await editSched(User_idUser, Store_idStore, starttime, endtime, workcode, idSchedule);
+    await editSched(User_idUser, Store_idStore, starttime, endtime, workcode, idSchedule,archived);
 
     res.status(200).json({ message: "success" });
   } catch (err) {

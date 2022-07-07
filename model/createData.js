@@ -15,3 +15,21 @@ const createSchedules = async () => {
     return schedules;
   };
   // createSchedules();
+  const createSchedAvail = async()=>{
+  const data = await prisma.employee_sched_availability.createMany({
+    data:[{
+      isFulltime:true,
+      availHrsinWeek:40,
+      User_idUser:5,
+      Store_idStore:1,
+    },{
+      isFulltime:true,
+      availHrsinWeek:40,
+      User_idUser:6,
+      Store_idStore:1,
+    },]
+
+  })
+  return data
+}
+// createSchedAvail()

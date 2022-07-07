@@ -19,8 +19,9 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
                 Store_idStore: storeId,
                 endtime: { gte: new Date(startDay) },
                 starttime: { lte: new Date(endDay) },
+                archived: false
               },
-              // select: { workcode: true, starttime: true, endtime: true },
+              
             },
             employee_sched_availability: {
               where: { Store_idStore: storeId },
@@ -54,8 +55,8 @@ const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
                 Store_idStore: storeId,
                 endtime: { gte: new Date(startDay) },
                 starttime: { lte: new Date(endDay) },
+                archived: false
               },
-              // select: { workcode: true, starttime: true, endtime: true },
             },
             employee_sched_availability: {
               where: { Store_idStore: storeId },
@@ -89,6 +90,7 @@ const getMySchedulesFrom = async (storeId, myId, from) => {
               where: {
                 Store_idStore: storeId,
                 starttime: { gte: new Date(from) },
+                archived: false
               },
             },
           },
@@ -122,13 +124,9 @@ const getSchedulesToSwap = async (storeId, myId, positionId, from) => {
               where: {
                 Store_idStore: storeId,
                 starttime: { gte: new Date(from) },
+                archived: false
               },
-              select: {
-                idSchedule: true,
-                workcode: true,
-                starttime: true,
-                endtime: true,
-              },
+              
             },
           },
         },
@@ -147,7 +145,8 @@ const createSched = async (
   Store_idStore,
   starttime,
   endtime,
-  workcode
+  workcode,
+  archived
 ) => {
   const data = await prisma.schedule.create({
     data: {
@@ -156,6 +155,7 @@ const createSched = async (
       starttime,
       endtime,
       workcode,
+      archived
     },
   });
   // console.log("response", data);
@@ -168,7 +168,8 @@ const editSched = async (
   starttime,
   endtime,
   workcode,
-  idSchedule
+  idSchedule,
+  archived
 ) => {
   const data = await prisma.schedule.update({
     where: { idSchedule },
@@ -178,120 +179,12 @@ const editSched = async (
       starttime: new Date(starttime),
       endtime: new Date(endtime),
       workcode,
+      archived
     },
   });
   // console.log("response", data);
   return data;
 };
-
-// const createSchedAvail = async()=>{
-//   const data = await prisma.employee_sched_availability.createMany({
-//     data:[{
-//       isFulltime:true,
-//       availHrsinWeek:40,
-//       User_idUser:5,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:40,
-//       User_idUser:6,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:35,
-//       User_idUser:9,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:40,
-//       User_idUser:14,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:30,
-//       User_idUser:15,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:35,
-//       User_idUser:11,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:40,
-//       User_idUser:16,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:40,
-//       User_idUser:18,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:false,
-//       availHrsinWeek:20,
-//       User_idUser:19,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:30,
-//       User_idUser:3,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:40,
-//       User_idUser:4,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:30,
-//       User_idUser:2,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:40,
-//       User_idUser:20,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:40,
-//       User_idUser:23,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:false,
-//       availHrsinWeek:15,
-//       User_idUser:26,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:40,
-//       User_idUser:27,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:true,
-//       availHrsinWeek:30,
-//       User_idUser:17,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:false,
-//       availHrsinWeek:20,
-//       User_idUser:13,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:false,
-//       availHrsinWeek:10,
-//       User_idUser:22,
-//       Store_idStore:1,
-//     },{
-//       isFulltime:false,
-//       availHrsinWeek:25,
-//       User_idUser:5,
-//       Store_idStore:2,
-//     },]
-
-//   })
-//   return data
-// }
-// createSchedAvail()
 
 module.exports = {
   getUserSchedsByStore,
