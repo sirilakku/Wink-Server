@@ -12,10 +12,10 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 router.post("/coworkers", async (req, res) => {
-  console.log("req.id is", req.body);
+  // console.log("req.id is", req.body);
 
   try {
-    console.log("getting stores for id", req.body.storeId);
+    // console.log("getting stores for id", req.body.storeId);
     const coworkers = await getCoworkers(
       req.body.Store_idStore,
       req.body.UserProfile_idUserProfile
@@ -28,7 +28,7 @@ router.post("/coworkers", async (req, res) => {
 });
 
 router.post("/createconversation", async (req, res) => {
-  console.log("req.body is", req.body);
+  // console.log("req.body is", req.body);
   try {
     // console.log("creating conversation for id", req.body.sender);
     const conversation = await createConversation(req);
@@ -43,7 +43,7 @@ router.post("/createconversation", async (req, res) => {
 });
 
 router.post("/getconversation", async (req, res) => {
-  console.log("req.body is", req.body);
+  // console.log("req.body is", req.body);
   if (req.body.receiver) {
     try {
       // console.log("getting conversation for id", req.body.sender);
