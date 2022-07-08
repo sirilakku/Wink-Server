@@ -29,7 +29,7 @@ const getMySchedulesFrom = async (storeId, myId, from) => {
     console.log(onlyMy);
     return onlyMy;
   } catch (err) {
-    console.log("error to get user schedules", err);
+    console.log("Error to get my future schedules", err);
   }
 };
 
@@ -60,12 +60,13 @@ const getSchedulesToSwap = async (storeId, myId, positionId, from) => {
         },
       },
     });
-    // console.log("getSchedules to swap ", data)
+    //Filtering empty schedules.
     const takenOutEmpty = data.filter((e) => e.user.schedule.length !== 0);
-    console.log("filtered", takenOutEmpty);
+    // console.log("getSchedules to swap ", data)
+    // console.log("filtered", takenOutEmpty);
     return takenOutEmpty;
   } catch (err) {
-    console.log("error to get Schedules to Swap", err);
+    console.log("Error to get schedules to swap", err);
   }
 };
 
@@ -91,7 +92,7 @@ const createSwapShiftReq = async (
     // console.log("response", data);
     return data;
   } catch (err) {
-    console.log("error occur in createSwapShiftReq",err);
+    console.log("Error to create shift swap request",err);
   }
 };
 

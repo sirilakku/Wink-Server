@@ -20,9 +20,8 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
                 Store_idStore: storeId,
                 endtime: { gte: new Date(startDay) },
                 starttime: { lte: new Date(endDay) },
-                archived: false
+                archived: false,
               },
-              
             },
             employee_sched_availability: {
               where: { Store_idStore: storeId },
@@ -35,7 +34,7 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
     // console.log("res", my);
     return my;
   } catch (err) {
-    console.log("error to get user's schedules", err);
+    console.log("Error to get my schedules", err);
   }
 };
 const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
@@ -56,7 +55,7 @@ const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
                 Store_idStore: storeId,
                 endtime: { gte: new Date(startDay) },
                 starttime: { lte: new Date(endDay) },
-                archived: false
+                archived: false,
               },
             },
             employee_sched_availability: {
@@ -70,7 +69,7 @@ const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
     // console.log('res', allEmployees)
     return exceptMine;
   } catch (err) {
-    console.log("error to get cowerkers' schedules ", err);
+    console.log("Error to get cowerkers' schedules ", err);
   }
 };
 
@@ -82,18 +81,22 @@ const createSched = async (
   workcode,
   archived
 ) => {
-  const data = await prisma.schedule.create({
-    data: {
-      User_idUser,
-      Store_idStore,
-      starttime,
-      endtime,
-      workcode,
-      archived
-    },
-  });
-  // console.log("response", data);
-  return data;
+  try {
+    const data = await prisma.schedule.create({
+      data: {
+        User_idUser,
+        Store_idStore,
+        starttime,
+        endtime,
+        workcode,
+        archived,
+      },
+    });
+    // console.log("response", data);
+    return data;
+  } catch (err) {
+    console.log("Error to create schedule", err);
+  }
 };
 
 const editSched = async (
@@ -105,19 +108,23 @@ const editSched = async (
   idSchedule,
   archived
 ) => {
-  const data = await prisma.schedule.update({
-    where: { idSchedule },
-    data: {
-      User_idUser,
-      Store_idStore,
-      starttime: new Date(starttime),
-      endtime: new Date(endtime),
-      workcode,
-      archived
-    },
-  });
-  // console.log("response", data);
-  return data;
+  try {
+    const data = await prisma.schedule.update({
+      where: { idSchedule },
+      data: {
+        User_idUser,
+        Store_idStore,
+        starttime: new Date(starttime),
+        endtime: new Date(endtime),
+        workcode,
+        archived,
+      },
+    });
+    // console.log("response", data);
+    return data;
+  } catch (err) {
+    console.log("Error to edit/archive schedule", err);
+  }
 };
 
 module.exports = {

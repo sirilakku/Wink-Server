@@ -15,10 +15,10 @@ router.get("/swapShiftRequest", async (req, res) => {
     const from = req.query.from;
     const day = moment(from, "YYYY-MM-DD").clone().format();
 
-    console.log("myschedule", storeId, myId, from);
+    console.log(
+      `Shift swap request on store id: ${storeId}, user id: ${myId}, from:${from}`
+    );
     const scheduleData = await getMySchedulesFrom(storeId, myId, day);
-    const mySchedules = formatSchedData(scheduleData)[0];
-    console.log("a", scheduleData);
     const schedulesToSwap = await getSchedulesToSwap(
       storeId,
       myId,
@@ -26,16 +26,16 @@ router.get("/swapShiftRequest", async (req, res) => {
       day
     );
     const othersSchedules = formatSchedData(schedulesToSwap);
+    const mySchedules = formatSchedData(scheduleData)[0];
     res.json({ mySchedules: mySchedules, schedulestoSwap: othersSchedules });
   } catch (err) {
-    console.log("Error in swapShiftRequest");
+    console.log("Error to get schedules for swap shift request");
   }
 });
 
 router.post("/swapShiftRequest", async (req, res) => {
   try {
-    const request = req.body;
-    console.log("Shift swap request", request);
+    console.log("Shift swap request", req,body);
     const { userId, storeId, reason, swapAvailableId, scheduleId } = req.body;
     await createSwapShiftReq(
       userId,
@@ -47,7 +47,7 @@ router.post("/swapShiftRequest", async (req, res) => {
 
     res.status(200).json("success");
   } catch (err) {
-    console.log("error in swapShiftRequest", err);
+    console.log("Error to create swap shift request", err);
   }
 });
 
