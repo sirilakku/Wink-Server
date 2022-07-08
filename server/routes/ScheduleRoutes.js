@@ -1,33 +1,16 @@
 const {
   getUserSchedsByStore,
   getCoworkersSchedsByStore,
-  getMySchedulesFrom,
-  getSchedulesToSwap,
   createSched,
   editSched
 } = require("../../model/scheduleModel");
 
+const formatSchedData =require('../utilities/function')
 let express = require("express");
 let router = express.Router();
 const moment = require("moment");
 
-const formatSchedData = (data) => {
-  const res = [];
-  data?.map((emp) => {
-    const dataObj = {
-      userId: emp.User_idUser,
-      storeId: emp.Store_idStore,
-      firstname: emp.user.firstname,
-      lastname: emp.user.lastname,
-      positionId: emp.userprofile.idUserProfile,
-      position: emp.userprofile.name,
-      schedules: emp.user.schedule,
-      availability: emp.user.employee_sched_availability&&emp.user.employee_sched_availability[0] 
-    };
-    emp.user.inactive === false && res.push(dataObj);
-  });
-  return res;
-};
+
 
 
 router.get("/monthly", async (req, res) => {
@@ -112,32 +95,6 @@ router.get("/day", async (req, res) => {
   res.json({ mySchedules: dayUserData, coworkersSchedules: dayCoworkersData });
 });
 
-router.get("/shiftswap", async (req, res) => {
-  const storeId = req.query.storeId * 1;
-  const myId = req.query.myId * 1;
-  const from = req.query.from;
-  const day = moment(from, "YYYY-MM-DD").clone().format();
-
-  console.log("myschedule", storeId, myId, from);
-  const scheduleData = await getMySchedulesFrom(storeId, myId, day);
-  const mySchedules = formatSchedData(scheduleData)[0];
-  const schedulesToSwap = await getSchedulesToSwap(
-    storeId,
-    myId,
-    mySchedules.positionId,
-    day
-  );
-  // console.log("a",schedulesToSwap)
-  const othersSchedules = formatSchedData(schedulesToSwap);
-  res.json({ mySchedules: mySchedules, schedulestoSwap: othersSchedules });
-});
-
-router.post("/shiftswap", async (req, res) => {
-  const request = req.body;
-  console.log("Shift swap request", request);
-  res.status(200).json();
-});
-
 
 
 router.post("/scheduling", async (req, res) => {
@@ -168,4 +125,4 @@ router.patch("/scheduling", async (req, res) => {
 
 
 
-module.exports = router;
+module.exports = router
