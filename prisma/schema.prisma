@@ -957,7 +957,8 @@ model employee_shift_swap {
   Schedule_idSchedule Int?
   possibleSwapShiftId Int?
   requestTimeStamp    DateTime  @default(dbgenerated("(0000-00-00 00:00:00)")) @db.Timestamp(0)
-  approvedTimeStamp   DateTime  @default(dbgenerated("(0000-00-00 00:00:00)")) @db.Timestamp(0)
+  approvedTimeStamp   DateTime? @default(dbgenerated("(0000-00-00 00:00:00)")) @db.Timestamp(0)
+  reason              String?   @db.VarChar(200)
   schedule            schedule? @relation(fields: [Schedule_idSchedule], references: [idSchedule], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee_shift_swap_schedule1")
   store               store?    @relation(fields: [Store_idStore], references: [idStore], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee_shift_swap_store1")
   user                user?     @relation(fields: [User_idUser], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee_shift_swap_user1")
