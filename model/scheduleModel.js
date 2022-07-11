@@ -2,6 +2,18 @@ const { PrismaClient } = require("@prisma/client");
 // using `prisma` in your application to read and write data in DB
 const prisma = new PrismaClient();
 
+const getPositionId = async (User_idUser, Store_idStore) => {
+  try {
+    const data = await prisma.userprivileges.findMany({
+      where: { Store_idStore, User_idUser },
+      select: { UserProfile_idUserProfile: true },
+    });
+    return data[0].UserProfile_idUserProfile;
+  } catch (err) {
+    console.log("Error to check authenticated user", err);
+  }
+};
+
 const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
   try {
     const my = await prisma.userprivileges.findMany({
@@ -128,6 +140,7 @@ const editSched = async (
 };
 
 module.exports = {
+  getPositionId,
   getUserSchedsByStore,
   getCoworkersSchedsByStore,
   createSched,
