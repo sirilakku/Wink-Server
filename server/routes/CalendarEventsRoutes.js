@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const getCalEventsForMonth = require("../../model/calEventsModel");
+const {getCalEventsForMonth, addEvent} = require("../../model/calEventsModel");
 
 router.get("/events", async (req, res) => {
     
@@ -13,4 +13,12 @@ router.get("/events", async (req, res) => {
   res.json({ holidayData });
 });
 
+router.post("/createEvents", async (req,res) =>{
+  const eventDate = req.query.eventDate
+  const eventName = req.query.eventName
+
+  const newEvent = addEvent(eventDate,eventName)
+  const addedEvent = await newEvent
+  res.json({addedEvent})
+})
 module.exports = router;
