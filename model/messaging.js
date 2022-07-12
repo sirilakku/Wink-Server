@@ -3,8 +3,6 @@ const { Socket } = require("socket.io");
 
 const prisma = new PrismaClient();
 
-
-
 const getCoworkers = async (storeId, userPrivilegeId) => {
   // console.log("getting coworkers for store", storeId);
   // console.log("getting coworkers for userPrivilegeId", userPrivilegeId);
@@ -33,7 +31,6 @@ const getCoworkers = async (storeId, userPrivilegeId) => {
   } catch (error) {
     res.status(500).send(error);
   }
-
 
   console.log("userbyname function", coWorkers);
   return coWorkers;
@@ -140,6 +137,40 @@ const getNotifications = async (req) => {
   }
 };
 
+
+
+
+
+
+
+const getUnreadConversations = async (req) => {
+  console.log("getting conversations for user", req.body.user);
+  try {
+    const conversations = await prisma.messages.findMany({
+      where: {
+        receiver: req.body.user,
+        read_receits: false,
+        store: req.body.store,
+      },
+      include: {
+        user_messages_senderTouser: {
+          select: {
+            firstname: true,
+            lastname: true,
+          },
+        },
+      },
+    });
+
+    console.log("this is conversations", conversations);
+    return conversations;
+  } catch (error) {
+    // res.status(500).send(error);
+
+    console.log("error is", error);
+  }
+};
+
 module.exports = {
   getCoworkers,
   createConversation,
@@ -147,4 +178,5 @@ module.exports = {
   getMessages,
   updateMessages,
   getNotifications,
+  getUnreadConversations,
 };

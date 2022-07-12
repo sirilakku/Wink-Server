@@ -43,7 +43,7 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
       },
       orderBy: { userprofile: { name: "asc" } },
     });
-    // console.log("res", my);
+    //console.log("res", my);
     return my;
   } catch (err) {
     console.log("Error to get my schedules", err);

@@ -18,11 +18,21 @@ const getCalEventsForMonth = async (startOfHoliday, endOfHoliday) => {
     //     },
     //   },
     // });
-    console.log("Events fetched", result);
+    //console.log("Events fetched", result);
     return result;
   } catch (err) {
     console.log("Error fetching calendar events");
   }
 };
 
-module.exports = getCalEventsForMonth;
+const addEvent = async (eventDate, eventName) => {
+  try {
+    const result =
+      await prisma.$queryRaw`insert into employee_calendar_events (event_date,nameEn) values (${eventDate}, ${eventName})`;
+    console.log("add events result", result);
+    return result;
+  } catch (err) {
+    console.log(" Error updating data ");
+  }
+};
+module.exports = { getCalEventsForMonth, addEvent };
