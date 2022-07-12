@@ -80,11 +80,11 @@ const getConversations = async (req) => {
 };
 
 const getMessages = async (req) => {
-  // console.log("getting conversations for user", req.user);
+  // console.log("getting conversations for user", req);
   try {
     const conversations = await prisma.messages.findMany({
       where: {
-        sender: { in: [req.user, req.receiver] },
+        sender: { in: [req.user, req.receiver, req.unread] },
         store: req.store,
         receiver: { in: [req.user, req.receiver] },
       },
@@ -139,10 +139,6 @@ const getNotifications = async (req) => {
 
 
 
-
-
-
-
 const getUnreadConversations = async (req) => {
   console.log("getting conversations for user", req.body.user);
   try {
@@ -162,7 +158,7 @@ const getUnreadConversations = async (req) => {
       },
     });
 
-    console.log("this is conversations", conversations);
+    // console.log("this is conversations", conversations);
     return conversations;
   } catch (error) {
     // res.status(500).send(error);

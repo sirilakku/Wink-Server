@@ -49,7 +49,8 @@ router.post("/getconversation", async (req, res) => {
     try {
       // console.log("getting conversation for id", req.body.sender);
       const conversation = await getConversations(req);
-      // console.log("this is conversation", conversation);
+      // console.log("this is conversation being sent to the message window", conversation);
+
       res.json(conversation);
     } catch (error) {
       res.send(error);
