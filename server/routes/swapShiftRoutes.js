@@ -19,14 +19,16 @@ router.get("/swapShiftRequest", async (req, res) => {
       `Shift swap request on store id: ${storeId}, user id: ${myId}, from:${from}`
     );
     const scheduleData = await getMySchedulesFrom(storeId, myId, day);
+   console.log("Before set schedules to swap.",scheduleData.positionIdd)
+   const mySchedules = formatSchedData(scheduleData)[0];
     const schedulesToSwap = await getSchedulesToSwap(
       storeId,
       myId,
       mySchedules.positionId,
       day
-    );
+      );
+      console.log("data to send", schedulesToSwap)
     const othersSchedules = formatSchedData(schedulesToSwap);
-    const mySchedules = formatSchedData(scheduleData)[0];
     res.json({ mySchedules: mySchedules, schedulestoSwap: othersSchedules });
   } catch (err) {
     console.log("Error to get schedules for swap shift request");
