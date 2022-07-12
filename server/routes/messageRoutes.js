@@ -6,6 +6,7 @@ const {
   getConversations,
   updateMessages,
   getNotifications,
+  getUnreadConversations,
 } = require("../../model/messaging");
 const { PrismaClient } = require("@prisma/client");
 
@@ -70,5 +71,18 @@ router.post("/notifications", async (req, res) => {
     console.log("error is", error);
   }
 });
+
+router.post("/unread", async (req, res) => {
+  try {
+    console.log("getting conversation for id", req.body);
+    const unread = await getUnreadConversations(req);
+    console.log("this is the unread", unread);
+    res.json(unread);
+  } catch (error) {
+    res.send(error);
+    console.log("error is", error);
+  }
+}
+);
 
 module.exports = router;
