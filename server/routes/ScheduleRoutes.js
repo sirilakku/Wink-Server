@@ -41,14 +41,14 @@ router.get("/monthly", async (req, res) => {
       .clone()
       .endOf("month")
       .format();
-    console.log("period in month", new Date(startDayOfMonth), endOfMonth);
+    //console.log("period in month", new Date(startDayOfMonth), endOfMonth);
     const monthlySchedule = await getUserSchedsByStore(
       storeId,
       userId,
       startDayOfMonth,
       endOfMonth
     );
-    console.log("monthlySchedule", monthlySchedule);
+    //console.log("monthlySchedule", monthlySchedule);
     const monthlyUserData = formatSchedData(monthlySchedule);
     res.status(200).json({ mySchedules: monthlyUserData });
   } catch (err) {
