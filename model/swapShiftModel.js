@@ -35,6 +35,7 @@ const getMySchedulesFrom = async (storeId, myId, from) => {
 
 const getSchedulesToSwap = async (storeId, myId, positionId, from) => {
   try {
+    // console.log("getScheudlfeToSwap", storeId, myId, positionId, from)
     const data = await prisma.userprivileges.findMany({
       where: {
         Store_idStore: storeId,

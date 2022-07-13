@@ -1,4 +1,5 @@
 const {
+  getPositionId,
   getUserSchedsByStore,
   getCoworkersSchedsByStore,
   createSched,
@@ -9,6 +10,27 @@ const formatSchedData = require("../utilities/function");
 let express = require("express");
 let router = express.Router();
 const moment = require("moment");
+
+const checkAdmin =async(req,res, next)=>{
+  try{
+    console.log("user", req.body)
+    const {User_idUser, Store_idStore} = req.body.user
+    console.log("Check admin on id: ",User_idUser, "Store: ", Store_idStore);
+    const previlege = await getPositionId(User_idUser, Store_idStore)
+    console.log("prepilageID", previlege)
+    if(previlege===1000 || previlege===1002){
+      return next();
+    }else{
+      console.log("prepilageID to send", previlege)
+      res.status(403).json(
+        {message:"User doesn't have a permission."}
+      )
+    }
+    console.log("profielId", previlege)
+  }catch(err){
+    console.log("Error to check authentication")
+  }
+}
 
 router.get("/monthly", async (req, res) => {
   try {
@@ -112,9 +134,9 @@ router.get("/daily", async (req, res) => {
   }
 });
 
-router.post("/scheduling", async (req, res) => {
+router.post("/scheduling", checkAdmin,async (req, res) => {
   try {
-    console.log("creating schedule with", req.body);
+    console.log("creating schedule with", req.body.data);
     const {
       User_idUser,
       Store_idStore,
@@ -122,7 +144,7 @@ router.post("/scheduling", async (req, res) => {
       endtime,
       workcode,
       archived,
-    } = req.body;
+    } = req.body.data;
     await createSched(
       User_idUser,
       Store_idStore,
@@ -138,9 +160,9 @@ router.post("/scheduling", async (req, res) => {
   }
 });
 
-router.patch("/scheduling", async (req, res) => {
+router.patch("/scheduling", checkAdmin, async (req, res) => {
   try {
-    console.log("Editing schedule to", req.body);
+    console.log("Editing schedule to", req.body.data);
     const {
       User_idUser,
       Store_idStore,
@@ -149,7 +171,7 @@ router.patch("/scheduling", async (req, res) => {
       workcode,
       idSchedule,
       archived,
-    } = req.body;
+    } = req.body.data;
     await editSched(
       User_idUser,
       Store_idStore,
