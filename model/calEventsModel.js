@@ -32,7 +32,18 @@ const addEvent = async (eventDate, eventName) => {
     console.log("add events result", result);
     return result;
   } catch (err) {
-    console.log(" Error updating data ");
+    console.log("Error updating event");
   }
 };
+
+const editEvent = async (eventDate,  eventName) =>{
+try {
+  const result = await prisma.$queryRaw`update employee_calendar_events set event_date=${eventDate}`
+
+} catch (err) {
+  console.log("Error editing event")
+}
+
+ 
+}
 module.exports = { getCalEventsForMonth, addEvent };
