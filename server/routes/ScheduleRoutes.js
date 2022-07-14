@@ -41,14 +41,14 @@ router.get("/monthly", async (req, res) => {
       .clone()
       .endOf("month")
       .format();
-    console.log("period in month", new Date(startDayOfMonth), endOfMonth);
+    //console.log("period in month", new Date(startDayOfMonth), endOfMonth);
     const monthlySchedule = await getUserSchedsByStore(
       storeId,
       userId,
       startDayOfMonth,
       endOfMonth
     );
-    console.log("monthlySchedule", monthlySchedule);
+    //console.log("monthlySchedule", monthlySchedule);
     const monthlyUserData = formatSchedData(monthlySchedule);
     res.status(200).json({ mySchedules: monthlyUserData });
   } catch (err) {
@@ -91,6 +91,37 @@ router.get("/weekly", async (req, res) => {
     res.json({
       mySchedules: weekUserData,
       coworkersSchedules: weekCoworkersData,
+    });
+  } catch (err) {
+    res.json("Error to get weekly schedules", err);
+  }
+});
+router.get("/weekly/onlyMine", async (req, res) => {
+  try {
+    //All employee Schedule
+    const storeId = req.query.storeId * 1;
+    const userId = req.query.userId * 1;
+    const startDayofWeek = req.query.startDay;
+    const endDayofWeek = moment(startDayofWeek)
+      .clone()
+      .add(1, "weeks")
+      .utc()
+      .format();
+    console.log("period", startDayofWeek, endDayofWeek);
+
+    const userSchedules = getUserSchedsByStore(
+      storeId,
+      userId,
+      startDayofWeek,
+      endDayofWeek
+    );
+    
+    const userData = await userSchedules;
+    
+    // console.log('scheds', userData, coworkersData)
+    const weekUserData = formatSchedData(userData);
+    res.json({
+      mySchedules: weekUserData,
     });
   } catch (err) {
     res.json("Error to get weekly schedules", err);

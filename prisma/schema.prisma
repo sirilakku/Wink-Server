@@ -254,6 +254,9 @@ model patient {
   email_strip                                                         String           @default(dbgenerated("()")) @db.VarChar(45)
   PatientPrivacyConsentAcceptODTransfer                               Boolean          @default(false)
   PatientSource_idPatientSource                                       Int?
+  lastEE_idStore                                                      Int?
+  FamilyDoctor_idUser                                                 Int?
+  user_patient_FamilyDoctor_idUserTouser                              user?            @relation("patient_FamilyDoctor_idUserTouser", fields: [FamilyDoctor_idUser], references: [idUser], onDelete: Restrict, onUpdate: Restrict, map: "fk_Patient_User2")
   patient_patientTopatient_OtherInsuredPatient_idPatient              patient?         @relation("patientTopatient_OtherInsuredPatient_idPatient", fields: [OtherInsuredPatient_idPatient], references: [idPatient], onDelete: Restrict, onUpdate: Restrict, map: "fk_Patient_Patient5")
   patient_patientTopatient_PrimaryInsuredPatient_idPatient            patient?         @relation("patientTopatient_PrimaryInsuredPatient_idPatient", fields: [PrimaryInsuredPatient_idPatient], references: [idPatient], onDelete: Restrict, onUpdate: Restrict, map: "fk_Patient_Patient2")
   user                                                                user?            @relation(fields: [ReferringDoctor_idUser], references: [idUser], onDelete: Restrict, onUpdate: Restrict, map: "fk_Patient_User1")
@@ -297,6 +300,7 @@ model patient {
   @@index([Reference1], map: "ref")
   @@index([Reference2], map: "ref2")
   @@index([PatientSource_idPatientSource], map: "fk_Patient_PatientSource_idx")
+  @@index([FamilyDoctor_idUser], map: "fk_Patient_User2_idx")
 }
 
 model patientinvoice {
@@ -418,6 +422,7 @@ model patientinvoice {
   @@index([Patient_idPatient, orderdate], map: "lastPatientInvoice")
   @@index([Reference1], map: "ref1")
   @@index([Reference2], map: "ref2")
+  @@index([CreditReason_idCreditReason], map: "fk_PatientInvoice_CreditReason_idx")
 }
 
 model patientinvoiceitem {
@@ -522,8 +527,8 @@ model store {
   emailFromName                                              String?                       @db.VarChar(45)
   emailSMPTHost                                              String?                       @db.VarChar(45)
   emailSMTPPort                                              Int?
-  emailSMTPUsername                                          String?                       @db.VarChar(45)
-  emailSMTPPassword                                          String?                       @db.VarChar(45)
+  emailSMTPUsername                                          String?                       @db.VarChar(300)
+  emailSMTPPassword                                          String?                       @db.VarChar(300)
   emailSMTPAuth                                              Boolean                       @default(false)
   name_fr                                                    String                        @db.VarChar(45)
   name_sp                                                    String                        @db.VarChar(45)
@@ -617,6 +622,8 @@ model store {
   TaxCode_idTaxCodeExams                                     Int?
   externalID                                                 String?                       @db.VarChar(100)
   emailApiKey                                                String?                       @db.VarChar(300)
+  RxWorksheetDefaultSupplier_idSupplier                      Int?
+  ClWorksheetDefaultSupplier_idSupplier                      Int?
   store_storeTostore_edgeAtStore_idStore                     store?                        @relation("storeTostore_edgeAtStore_idStore", fields: [edgeAtStore_idStore], references: [idStore], onDelete: Restrict, onUpdate: Restrict, map: "fk_Store_Store1")
   store_storeTostore_winkStoreBillStore_idStore              store?                        @relation("storeTostore_winkStoreBillStore_idStore", fields: [winkStoreBillStore_idStore], references: [idStore], onDelete: Restrict, onUpdate: Restrict, map: "fk_Store_Store2")
   store_storeTostore_winkStoreShipStore_idStore              store?                        @relation("storeTostore_winkStoreShipStore_idStore", fields: [winkStoreShipStore_idStore], references: [idStore], onDelete: Restrict, onUpdate: Restrict, map: "fk_Store_Store3")
@@ -652,6 +659,8 @@ model store {
   @@index([Company_idCompany], map: "fk_Store_comp_idx")
   @@index([ePayAccounts_idePayAccounts], map: "fk_Store_ePayAccounts1_idx")
   @@index([googleMailUploads_iduploads], map: "fk_Store_uploads1_idx")
+  @@index([RxWorksheetDefaultSupplier_idSupplier], map: "fk_Store_Supplier4_idx")
+  @@index([ClWorksheetDefaultSupplier_idSupplier], map: "fk_Store_Supplier5_idx")
 }
 
 model storeopeninghours {
@@ -798,13 +807,16 @@ model user {
   externalDoctorAccess                                           Int                           @default(2)
   activeDirectoryId                                              String?                       @db.VarChar(300)
   qrCodeScanned                                                  Boolean                       @default(false)
+  provideRegularAppointmentTypes                                 Boolean                       @default(true)
   store                                                          store?                        @relation(fields: [Store_idStore], references: [idStore], onDelete: Restrict, onUpdate: Restrict, map: "fk_User_Store1")
   user                                                           user?                         @relation("userTouser_digitalSignatureUser_idUser", fields: [digitalSignatureUser_idUser], references: [idUser], onDelete: Restrict, onUpdate: Restrict, map: "fk_User_User1")
   appointments                                                   appointments[]
+  employee_calendar_events                                       employee_calendar_events[]
   employee_sched_availability                                    employee_sched_availability[]
   employee_shift_swap                                            employee_shift_swap[]
   messages_messages_senderTouser                                 messages[]                    @relation("messages_senderTouser")
   messages_messages_storeTouser                                  messages[]                    @relation("messages_storeTouser")
+  patient_patient_FamilyDoctor_idUserTouser                      patient[]                     @relation("patient_FamilyDoctor_idUserTouser")
   patient                                                        patient[]
   patientinvoice_patientinvoice_CreateBy_idUserTouser            patientinvoice[]              @relation("patientinvoice_CreateBy_idUserTouser")
   patientinvoice_patientinvoice_SalesRepTouser                   patientinvoice[]              @relation("patientinvoice_SalesRepTouser")
@@ -925,13 +937,18 @@ model messages {
 }
 
 model employee_calendar_events {
-  event_date   DateTime? @db.Date
-  event_id     Int       @id @default(autoincrement())
-  nameEn       String?   @db.VarChar(45)
-  nameFr       String?   @db.VarChar(45)
-  federal      Boolean?
-  observedDate DateTime? @db.Date
-  province     String?   @db.VarChar(45)
+  event_date                  DateTime? @db.Date
+  event_id                    Int       @id @default(autoincrement())
+  nameEn                      String?   @db.VarChar(45)
+  nameFr                      String?   @db.VarChar(45)
+  federal                     Boolean?
+  observedDate                DateTime? @db.Date
+  province                    String?   @db.VarChar(45)
+  user_id                     Int?
+  employee_calendar_eventscol String?   @db.VarChar(45)
+  user                        user?     @relation(fields: [user_id], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "user_id_fk")
+
+  @@index([user_id], map: "user_id_idx")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
@@ -959,6 +976,7 @@ model employee_shift_swap {
   requestTimeStamp    DateTime  @default(dbgenerated("(0000-00-00 00:00:00)")) @db.Timestamp(0)
   approvedTimeStamp   DateTime? @default(dbgenerated("(0000-00-00 00:00:00)")) @db.Timestamp(0)
   reason              String?   @db.VarChar(200)
+  approved            Boolean?  @default(false)
   schedule            schedule? @relation(fields: [Schedule_idSchedule], references: [idSchedule], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee_shift_swap_schedule1")
   store               store?    @relation(fields: [Store_idStore], references: [idStore], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee_shift_swap_store1")
   user                user?     @relation(fields: [User_idUser], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee_shift_swap_user1")

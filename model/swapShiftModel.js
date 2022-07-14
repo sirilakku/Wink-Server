@@ -76,7 +76,8 @@ const createSwapShiftReq = async (
   storeId,
   reason,
   swapAvailable,
-  scheduleId
+  scheduleId,
+  approved
 ) => {
   try {
     const data = await prisma.employee_shift_swap.create({
@@ -88,6 +89,7 @@ const createSwapShiftReq = async (
         requestTimeStamp: new Date(),
         approvedTimeStamp: null,
         reason: reason,
+        approved: approved
       },
     });
     // console.log("response", data);
