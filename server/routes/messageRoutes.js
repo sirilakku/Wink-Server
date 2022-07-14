@@ -7,6 +7,7 @@ const {
   updateMessages,
   getNotifications,
   getUnreadConversations,
+  findStoreAdmins,
 } = require("../../model/messaging");
 const { PrismaClient } = require("@prisma/client");
 
@@ -83,7 +84,18 @@ router.post("/unread", async (req, res) => {
     res.send(error);
     console.log("error is", error);
   }
-}
-);
+});
+
+router.post("/admins", async (req, res) => {
+  try {
+    console.log("getting admins for store", req.body.store);
+    const admins = await findStoreAdmins(req.body.store);
+    console.log("this is the admins", admins);
+    res.json(admins);
+  } catch (error) {
+    res.send(error);
+    console.log("error is", error);
+  }
+});
 
 module.exports = router;

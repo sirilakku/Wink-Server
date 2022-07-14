@@ -167,6 +167,24 @@ const getUnreadConversations = async (req) => {
   }
 };
 
+const findStoreAdmins = async (store) => {
+  console.log("finding store admins for store", store);
+  try {
+    const storeAdmins = await prisma.userprivileges.findMany({
+      where: {
+        Store_idStore: store,
+        UserProfile_idUserProfile: { in: [1000, 1002] },
+      },
+    });
+    // console.log("this is storeAdmins", storeAdmins);
+    return storeAdmins;
+  } catch (error) {
+    res.status(500).send(error);
+    console.log("error is", error);
+  }
+}
+
+
 module.exports = {
   getCoworkers,
   createConversation,
@@ -175,4 +193,6 @@ module.exports = {
   updateMessages,
   getNotifications,
   getUnreadConversations,
+  findStoreAdmins,
+
 };
