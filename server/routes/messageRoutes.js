@@ -8,6 +8,7 @@ const {
   getNotifications,
   getUnreadConversations,
   findStoreAdmins,
+  sendAdminsShiftSwapRequest,
 } = require("../../model/messaging");
 const { PrismaClient } = require("@prisma/client");
 
@@ -97,5 +98,20 @@ router.post("/admins", async (req, res) => {
     console.log("error is", error);
   }
 });
+
+router.post("/shiftSwapMessage", async (req, res) => {
+  try {
+    console.log("sending shift swap request message", req.body);
+    const message = await sendAdminsShiftSwapRequest(req.body);
+    console.log("this is the message", message);
+    res.json(message);
+  } catch (error) {
+    res.send(error);
+    console.log("error is", error);
+  }
+}
+);
+
+
 
 module.exports = router;

@@ -137,8 +137,6 @@ const getNotifications = async (req) => {
   }
 };
 
-
-
 const getUnreadConversations = async (req) => {
   console.log("getting conversations for user", req.body.user);
   try {
@@ -182,8 +180,44 @@ const findStoreAdmins = async (store) => {
     res.status(500).send(error);
     console.log("error is", error);
   }
-}
+};
 
+const sendAdminsShiftSwapRequest = async (req, res) => {
+  console.log("sending admins shift swap request for store", req);
+  try {
+    let messages = req.receiver.map((receiver) => {
+      return {
+        sender: req.sender,
+        receiver: receiver,
+        chat: req.chat,
+        user_id: req.sender,
+        user_privilages: 1002,
+        msg_timeStamp: new Date(),
+        store: req.store,
+        read_receits: false,
+        }})
+    const message = await prisma.messages.createMany({
+    
+        data: messages.map((message) => {
+          return {
+            sender: message.sender,
+            receiver: message.receiver,
+            chat: message.chat,
+            user_id: message.user_id,
+            user_privilages: message.user_privilages,
+            msg_timeStamp: message.msg_timeStamp,
+            store: message.store,
+            read_receits: message.read_receits,
+            }}),
+      
+    });
+    // console.log("this is message", message);
+    return message;
+  } catch (error) {
+    // res.status(500).send(error);
+    console.log("error is", error);
+  }
+};
 
 module.exports = {
   getCoworkers,
@@ -194,5 +228,5 @@ module.exports = {
   getNotifications,
   getUnreadConversations,
   findStoreAdmins,
-
+  sendAdminsShiftSwapRequest,
 };
