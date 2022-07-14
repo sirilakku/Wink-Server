@@ -2,6 +2,7 @@ const {
   getPositionId,
   getUserSchedsByStore,
   getCoworkersSchedsByStore,
+  getUserSchedsByType,
   createSched,
   editSched,
 } = require("../../model/scheduleModel");
@@ -11,26 +12,24 @@ let express = require("express");
 let router = express.Router();
 const moment = require("moment");
 
-const checkAdmin =async(req,res, next)=>{
-  try{
-    console.log("user", req.body)
-    const {User_idUser, Store_idStore} = req.body.user
-    console.log("Check admin on id: ",User_idUser, "Store: ", Store_idStore);
-    const previlege = await getPositionId(User_idUser, Store_idStore)
-    console.log("prepilageID", previlege)
-    if(previlege===1000 || previlege===1002){
+const checkAdmin = async (req, res, next) => {
+  try {
+    console.log("user", req.body);
+    const { User_idUser, Store_idStore } = req.body.user;
+    console.log("Check admin on id: ", User_idUser, "Store: ", Store_idStore);
+    const previlege = await getPositionId(User_idUser, Store_idStore);
+    console.log("prepilageID", previlege);
+    if (previlege === 1000 || previlege === 1002) {
       return next();
-    }else{
-      console.log("prepilageID to send", previlege)
-      res.status(403).json(
-        {message:"User doesn't have a permission."}
-      )
+    } else {
+      console.log("prepilageID to send", previlege);
+      res.status(403).json({ message: "User doesn't have a permission." });
     }
-    console.log("profielId", previlege)
-  }catch(err){
-    console.log("Error to check authentication")
+    console.log("profielId", previlege);
+  } catch (err) {
+    console.log({ error: "Error to check authentication", message: err });
   }
-}
+};
 
 router.get("/monthly", async (req, res) => {
   try {
@@ -109,22 +108,33 @@ router.get("/weekly/onlyMine", async (req, res) => {
       .format();
     console.log("period", startDayofWeek, endDayofWeek);
 
-    const userSchedules = getUserSchedsByStore(
+    const userWorkSchedules = getUserSchedsByType(
       storeId,
       userId,
       startDayofWeek,
-      endDayofWeek
+      endDayofWeek,
+      0
     );
-    
-    const userData = await userSchedules;
-    
-    // console.log('scheds', userData, coworkersData)
-    const weekUserData = formatSchedData(userData);
+    const userVacSchedules = getUserSchedsByType(
+      storeId,
+      userId,
+      startDayofWeek,
+      endDayofWeek,
+      1
+    );
+
+    const userWorkData = await userWorkSchedules;
+    const userVacData = await userVacSchedules;
+
+    const weekUserWorkData = formatSchedData(userWorkData);
+    const weekUserVacData = formatSchedData(userVacData);
+    console.log("scheds", weekUserVacData, weekUserWorkData);
     res.json({
-      mySchedules: weekUserData,
+      myWorkSched: weekUserWorkData,
+      myVacSched: weekUserVacData,
     });
   } catch (err) {
-    res.json("Error to get weekly schedules", err);
+    res.json({ error: "Error to get weekly schedules", message: err });
   }
 });
 
@@ -165,7 +175,7 @@ router.get("/daily", async (req, res) => {
   }
 });
 
-router.post("/scheduling", checkAdmin,async (req, res) => {
+router.post("/scheduling", checkAdmin, async (req, res) => {
   try {
     console.log("creating schedule with", req.body.data);
     const {

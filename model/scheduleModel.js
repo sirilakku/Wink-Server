@@ -85,6 +85,43 @@ const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
   }
 };
 
+const getUserSchedsByType = async (storeId, userId, startDay, endDay,workcode) => {
+  try {
+    const my = await prisma.userprivileges.findMany({
+      where: { Store_idStore: storeId, User_idUser: userId },
+      select: {
+        User_idUser: true,
+        Store_idStore: true,
+        userprofile: { select: { name: true } },
+        user: {
+          select: {
+            firstname: true,
+            lastname: true,
+            inactive: true,
+            schedule: {
+              where: {
+                Store_idStore: storeId,
+                endtime: { gte: new Date(startDay) },
+                starttime: { lte: new Date(endDay) },
+                archived: false,
+                workcode:workcode
+              },
+            },
+            employee_sched_availability: {
+              where: { Store_idStore: storeId },
+            },
+          },
+        },
+      },
+      orderBy: { userprofile: { name: "asc" } },
+    });
+    console.log("res", my);
+    return my;
+  } catch (err) {
+    console.log("Error to get my schedules", err);
+  }
+};
+
 const createSched = async (
   User_idUser,
   Store_idStore,
@@ -143,6 +180,7 @@ module.exports = {
   getPositionId,
   getUserSchedsByStore,
   getCoworkersSchedsByStore,
+  getUserSchedsByType,
   createSched,
   editSched,
 };
