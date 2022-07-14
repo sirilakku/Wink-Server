@@ -165,19 +165,34 @@ const getUnreadConversations = async (req) => {
   }
 };
 
-const findStoreAdmins = async (store) => {
-  console.log("finding store admins for store", store);
+const findStoreAdmins = async (myStore) => {
+  // const storeID = JSON.parse(myStore).storeId;
+  // console.log("finding store admins for store", storeID);
+
+
+  console.log("!!!", myStore)
+  // console.log("finding store admins for store", myStore);
   try {
-    const storeAdmins = await prisma.userprivileges.findMany({
+    const query = {
       where: {
-        Store_idStore: store,
-        UserProfile_idUserProfile: { in: [1000, 1002] },
+        AND: [
+          { Store_idStore: myStore.storeId },
+          { UserProfile_idUserProfile: { in: [1000, 1002] } },
+        ],
       },
-    });
-    // console.log("this is storeAdmins", storeAdmins);
+      select: {
+        User_idUser: true,
+
+      },
+    }
+ 
+        // console.log("query", JSON.stringify(query));
+    const storeAdmins = await prisma.userprivileges.findMany(query);
+    console.log("this is storeAdmins", storeAdmins);
+
     return storeAdmins;
   } catch (error) {
-    res.status(500).send(error);
+    // res.status(500).send(error);
     console.log("error is", error);
   }
 };
@@ -195,21 +210,21 @@ const sendAdminsShiftSwapRequest = async (req, res) => {
         msg_timeStamp: new Date(),
         store: req.store,
         read_receits: false,
-        }})
+      };
+    });
     const message = await prisma.messages.createMany({
-    
-        data: messages.map((message) => {
-          return {
-            sender: message.sender,
-            receiver: message.receiver,
-            chat: message.chat,
-            user_id: message.user_id,
-            user_privilages: message.user_privilages,
-            msg_timeStamp: message.msg_timeStamp,
-            store: message.store,
-            read_receits: message.read_receits,
-            }}),
-      
+      data: messages.map((message) => {
+        return {
+          sender: message.sender,
+          receiver: message.receiver,
+          chat: message.chat,
+          user_id: message.user_id,
+          user_privilages: message.user_privilages,
+          msg_timeStamp: message.msg_timeStamp,
+          store: message.store,
+          read_receits: message.read_receits,
+        };
+      }),
     });
     // console.log("this is message", message);
     return message;

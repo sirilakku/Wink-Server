@@ -10,7 +10,7 @@ const calendarEventsRoutes = require("./server/routes/calendarEventsRoutes")
 
 const passport = require("passport");
 const session = require("express-session");
-const { updateMessages } = require("./model/messaging");
+const { updateMessages, findStoreAdmins } = require("./model/messaging");
 app.use(session({ secret: "apple", cookie: { maxAge: 60000 } }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -63,6 +63,12 @@ io.sockets.on("connect", (socket) => {
   socket.on("notify", (data) => {
     console.log("socket notify", data);
     io.in("socket").emit("notification", data);
+  });
+
+  socket.on("findStoreAdmins", (data) => {
+    console.log("socket findStoreAdmins", data);
+    findStoreAdmins(JSON.parse(data))
+    console.log("socket admins", data);
   });
 
   // Leave the room if the user closes the socket
