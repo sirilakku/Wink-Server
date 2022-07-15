@@ -7,6 +7,8 @@ const {
   updateMessages,
   getNotifications,
   getUnreadConversations,
+  findStoreAdmins,
+  sendAdminsShiftSwapRequest,
 } = require("../../model/messaging");
 const { PrismaClient } = require("@prisma/client");
 
@@ -49,7 +51,8 @@ router.post("/getconversation", async (req, res) => {
     try {
       // console.log("getting conversation for id", req.body.sender);
       const conversation = await getConversations(req);
-      // console.log("this is conversation", conversation);
+      // console.log("this is conversation being sent to the message window", conversation);
+
       res.json(conversation);
     } catch (error) {
       res.send(error);
@@ -82,7 +85,33 @@ router.post("/unread", async (req, res) => {
     res.send(error);
     console.log("error is", error);
   }
+});
+
+router.post("/admins", async (req, res) => {
+  try {
+    console.log("getting admins for store", req.body.store);
+    const admins = await findStoreAdmins(req.body.store);
+    console.log("this is the admins", admins);
+    res.json(admins);
+  } catch (error) {
+    res.send(error);
+    console.log("error is", error);
+  }
+});
+
+router.post("/shiftSwapMessage", async (req, res) => {
+  try {
+    console.log("sending shift swap request message", req.body);
+    const message = await sendAdminsShiftSwapRequest(req.body);
+    console.log("this is the message", message);
+    res.json(message);
+  } catch (error) {
+    res.send(error);
+    console.log("error is", error);
+  }
 }
 );
+
+
 
 module.exports = router;

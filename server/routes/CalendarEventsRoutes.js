@@ -14,9 +14,10 @@ router.get("/events", async (req, res) => {
 });
 
 router.post("/createEvents", async (req,res) =>{
-  const eventDate = req.query.eventDate
-  const eventName = req.query.eventName
 
+  const eventDate = req.body.eventDate
+  const eventName = req.body.eventName
+  //console.log("Events point", eventDate, eventName )
   const newEvent = addEvent(eventDate,eventName)
   const addedEvent = await newEvent
   res.json({addedEvent})
