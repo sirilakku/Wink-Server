@@ -80,11 +80,11 @@ const getConversations = async (req) => {
 };
 
 const getMessages = async (req) => {
-  // console.log("getting conversations for user", req.user);
+  // console.log("getting conversations for user", req);
   try {
     const conversations = await prisma.messages.findMany({
       where: {
-        sender: { in: [req.user, req.receiver] },
+        sender: { in: [req.user, req.receiver, req.unread] },
         store: req.store,
         receiver: { in: [req.user, req.receiver] },
       },
@@ -137,12 +137,6 @@ const getNotifications = async (req) => {
   }
 };
 
-
-
-
-
-
-
 const getUnreadConversations = async (req) => {
   console.log("getting conversations for user", req.body.user);
   try {
@@ -162,11 +156,80 @@ const getUnreadConversations = async (req) => {
       },
     });
 
-    console.log("this is conversations", conversations);
+    // console.log("this is conversations", conversations);
     return conversations;
   } catch (error) {
     // res.status(500).send(error);
 
+    console.log("error is", error);
+  }
+};
+
+const findStoreAdmins = async (myStore) => {
+  // const storeID = JSON.parse(myStore).storeId;
+  // console.log("finding store admins for store", storeID);
+
+
+  console.log("!!!", myStore)
+  // console.log("finding store admins for store", myStore);
+  try {
+    const query = {
+      where: {
+        AND: [
+          { Store_idStore: myStore.storeId },
+          { UserProfile_idUserProfile: { in: [1000, 1002] } },
+        ],
+      },
+      select: {
+        User_idUser: true,
+
+      },
+    }
+ 
+        // console.log("query", JSON.stringify(query));
+    const storeAdmins = await prisma.userprivileges.findMany(query);
+    console.log("this is storeAdmins", storeAdmins);
+
+    return storeAdmins;
+  } catch (error) {
+    // res.status(500).send(error);
+    console.log("error is", error);
+  }
+};
+
+const sendAdminsShiftSwapRequest = async (req, res) => {
+  console.log("sending admins shift swap request for store", req);
+  try {
+    let messages = req.receiver.map((receiver) => {
+      return {
+        sender: req.sender,
+        receiver: receiver,
+        chat: req.chat,
+        user_id: req.sender,
+        user_privilages: 1002,
+        msg_timeStamp: new Date(),
+        store: req.store,
+        read_receits: false,
+      };
+    });
+    const message = await prisma.messages.createMany({
+      data: messages.map((message) => {
+        return {
+          sender: message.sender,
+          receiver: message.receiver,
+          chat: message.chat,
+          user_id: message.user_id,
+          user_privilages: message.user_privilages,
+          msg_timeStamp: message.msg_timeStamp,
+          store: message.store,
+          read_receits: message.read_receits,
+        };
+      }),
+    });
+    // console.log("this is message", message);
+    return message;
+  } catch (error) {
+    // res.status(500).send(error);
     console.log("error is", error);
   }
 };
@@ -179,4 +242,6 @@ module.exports = {
   updateMessages,
   getNotifications,
   getUnreadConversations,
+  findStoreAdmins,
+  sendAdminsShiftSwapRequest,
 };
