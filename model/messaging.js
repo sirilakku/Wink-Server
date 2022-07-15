@@ -166,12 +166,7 @@ const getUnreadConversations = async (req) => {
 };
 
 const findStoreAdmins = async (myStore) => {
-  // const storeID = JSON.parse(myStore).storeId;
-  // console.log("finding store admins for store", storeID);
 
-
-  console.log("!!!", myStore)
-  // console.log("finding store admins for store", myStore);
   try {
     const query = {
       where: {
@@ -182,13 +177,10 @@ const findStoreAdmins = async (myStore) => {
       },
       select: {
         User_idUser: true,
-
       },
-    }
- 
-        // console.log("query", JSON.stringify(query));
+    };
     const storeAdmins = await prisma.userprivileges.findMany(query);
-    console.log("this is storeAdmins", storeAdmins);
+    // console.log("this is storeAdmins", storeAdmins);
 
     return storeAdmins;
   } catch (error) {
