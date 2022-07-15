@@ -26,13 +26,19 @@ const getCalEventsForMonth = async (startOfHoliday, endOfHoliday) => {
 };
 
 const addEvent = async (eventDate, eventName) => {
+  console.log("eventDate eventName",eventName,new Date(eventDate))
   try {
-    const result =
-      await prisma.$queryRaw`insert into employee_calendar_events (event_date,nameEn) values (${eventDate}, ${eventName})`;
-    console.log("add events result", result);
-    return result;
+    const result = await prisma.employee_calendar_events.create({
+      data : {
+        event_date:new Date(eventDate),
+        nameEn:eventName
+      }
+    }
+    )
+    //console.log("add events result", result);
+    //return result;
   } catch (err) {
-    console.log("Error updating event");
+    console.log("Error inserting event",err);
   }
 };
 
