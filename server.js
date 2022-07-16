@@ -61,20 +61,20 @@ io.sockets.on("connect", (socket) => {
   });
 
   socket.on("notify", (data) => {
-    console.log("socket notify", data);
+    // console.log("socket notify", data);
     io.in("socket").emit("notification", data);
   });
 
   socket.on("findStoreAdmins", (data) => {
-    console.log("socket findStoreAdmins", data);
+    // console.log("socket findStoreAdmins", data);
     findStoreAdmins(JSON.parse(data)).then((admins) => {
-      console.log("socket admins", admins);
+      // console.log("socket admins", admins);
       socket.emit("storeAdmins", admins);
     });
   });
 
   socket.on("shiftSwapMessage", (data) => {
-    console.log("socket shiftSwapMessage", data);
+    // console.log("socket shiftSwapMessage", data);
     sendAdminsShiftSwapRequest(data)
   });
 

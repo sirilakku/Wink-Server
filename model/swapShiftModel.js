@@ -92,7 +92,7 @@ const createSwapShiftReq = async (
         approved: approved
       },
     });
-    // console.log("response", data);
+    console.log("response", data);
     return data;
   } catch (err) {
     console.log("Error to create shift swap request",err);
