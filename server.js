@@ -78,6 +78,7 @@ io.sockets.on("connect", (socket) => {
     sendAdminsShiftSwapRequest(data)
   });
 
+
   // Leave the room if the user closes the socket
   socket.on("disconnect", () => {
     // socket.leave(roomId);

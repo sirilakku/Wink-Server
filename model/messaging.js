@@ -203,7 +203,7 @@ const sendAdminsShiftSwapRequest = async (req, res) => {
         store: req.store,
         read_receits: false,
         shift_swap_id: req.shift_swap_id,
-        approved_swap: false,
+        unapproved_swap: true,
       };
     });
     const message = await prisma.messages.createMany({
@@ -218,7 +218,7 @@ const sendAdminsShiftSwapRequest = async (req, res) => {
           store: message.store,
           read_receits: message.read_receits,
           shift_swap_id: message.shift_swap_id,
-          approved_swap: message.approved_swap,
+          unapproved_swap: message.unapproved_swap,
         };
       }),
     });
