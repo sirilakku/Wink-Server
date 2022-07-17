@@ -98,6 +98,7 @@ router.get("/weekly", async (req, res) => {
 router.get("/weekly/onlyMine", async (req, res) => {
   try {
     //All employee Schedule
+    console.log(req)
     const storeId = req.query.storeId * 1;
     const userId = req.query.userId * 1;
     const startDayofWeek = req.query.startDay;
@@ -106,8 +107,10 @@ router.get("/weekly/onlyMine", async (req, res) => {
       .add(1, "weeks")
       .utc()
       .format();
-    console.log("period", startDayofWeek, endDayofWeek);
-
+    // console.log("period", startDayofWeek, endDayofWeek);
+    const startDay = moment().clone().startOf("day").format();
+    const endDay = moment().clone().endOf("day").format();
+    console.log('start adn end', startDay, endDay)
     const userWorkSchedules = getUserSchedsByType(
       storeId,
       userId,
@@ -122,16 +125,26 @@ router.get("/weekly/onlyMine", async (req, res) => {
       endDayofWeek,
       1
     );
-
+    const userTodaySchedules = getUserSchedsByStore(
+      storeId,
+      userId,
+      startDay,
+      endDay,
+      0
+    );
     const userWorkData = await userWorkSchedules;
     const userVacData = await userVacSchedules;
+    const userTodayData = await userTodaySchedules;
+    
 
     const weekUserWorkData = formatSchedData(userWorkData);
     const weekUserVacData = formatSchedData(userVacData);
-    console.log("scheds", weekUserVacData, weekUserWorkData);
+    const todayUserData = formatSchedData(userTodayData);
+    console.log("scheds", weekUserVacData, weekUserWorkData, todayUserData);
     res.json({
       myWorkSched: weekUserWorkData,
       myVacSched: weekUserVacData,
+      myTodayWorkSched: todayUserData
     });
   } catch (err) {
     res.json({ error: "Error to get weekly schedules", message: err });
