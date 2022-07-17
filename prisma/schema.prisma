@@ -927,7 +927,7 @@ model messages {
   user_privilages            Int?
   store                      Int?
   shift_swap_id              Int?
-  approved_swap              Boolean?
+  unapproved_swap            Boolean?
   user_messages_senderTouser user?                @relation("messages_senderTouser", fields: [sender], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "sender")
   employee_shift_swap        employee_shift_swap? @relation(fields: [shift_swap_id], references: [idShiftSwap], onDelete: NoAction, onUpdate: NoAction, map: "shift_swap_id")
   user_messages_storeTouser  user?                @relation("messages_storeTouser", fields: [store], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "user_id")
@@ -937,7 +937,7 @@ model messages {
   @@index([user_privilages], map: "user_privilages_idx")
   @@index([store], map: "store_idx")
   @@index([sender], map: "sender_idx")
-  @@index([approved_swap], map: "approved_swap_idx")
+  @@index([unapproved_swap], map: "approved_swap_idx")
   @@index([shift_swap_id], map: "shift_swap_id_idx")
 }
 

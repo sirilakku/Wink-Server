@@ -99,8 +99,29 @@ const createSwapShiftReq = async (
   }
 };
 
+const approveShiftSwap = async (req) => {
+  try {
+    const data = await prisma.employee_shift_swap.update({
+      where: {
+        idShiftSwap: req.shiftSwap,
+      },
+      data: {
+        approvedTimeStamp: new Date(),
+        approved: true,
+      },
+    });
+    console.log("response", data);
+    return data;
+  } catch (err) {
+    console.log("Error to approve shift swap",err);
+    return err;
+  }
+}
+
+
 module.exports = {
   getMySchedulesFrom,
   getSchedulesToSwap,
   createSwapShiftReq,
+  approveShiftSwap,
 };

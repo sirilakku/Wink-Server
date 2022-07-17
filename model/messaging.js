@@ -230,6 +230,26 @@ const sendAdminsShiftSwapRequest = async (req, res) => {
   }
 };
 
+const approveShiftSwapMessage = async (req) => {
+  console.log("approving shift swap for store", req);
+  try {
+    const message = await prisma.messages.updateMany({
+      where: {
+        shift_swap_id: req.shiftSwap,
+      },
+      data: {
+        unapproved_swap: false,
+      },
+    });
+    
+    return message;
+  } catch (error) {
+    // res.status(500).send(error);
+    console.log("error is", error);
+    return error;
+  }
+}
+
 module.exports = {
   getCoworkers,
   createConversation,
@@ -240,4 +260,5 @@ module.exports = {
   getUnreadConversations,
   findStoreAdmins,
   sendAdminsShiftSwapRequest,
+  approveShiftSwapMessage,
 };

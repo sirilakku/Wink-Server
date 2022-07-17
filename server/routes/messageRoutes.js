@@ -9,8 +9,10 @@ const {
   getUnreadConversations,
   findStoreAdmins,
   sendAdminsShiftSwapRequest,
+  approveShiftSwapMessage,
 } = require("../../model/messaging");
 const { PrismaClient } = require("@prisma/client");
+const { approveShiftSwap } = require("../../model/swapShiftModel");
 
 const prisma = new PrismaClient();
 
@@ -105,6 +107,21 @@ router.post("/shiftSwapMessage", async (req, res) => {
     const message = await sendAdminsShiftSwapRequest(req.body);
     console.log("this is the message", message);
     res.json(message);
+  } catch (error) {
+    res.send(error);
+    console.log("error is", error);
+  }
+}
+);
+
+router.post("/approveShiftSwap", async (req, res) => {
+  try {
+    console.log("approving shift swap request", req.body);
+    const approve = await approveShiftSwap(req.body);
+    const approveMessage = await approveShiftSwapMessage(req.body);
+    console.log("this is the approve", approve);
+    console.log("this is the approveMessage", approveMessage);
+    res.status(200).json({ message: "Shift swap request approved" });
   } catch (error) {
     res.send(error);
     console.log("error is", error);
