@@ -942,16 +942,15 @@ model messages {
 }
 
 model employee_calendar_events {
-  event_date                  DateTime? @db.Date
-  event_id                    Int       @id @default(autoincrement())
-  nameEn                      String?   @db.VarChar(45)
-  nameFr                      String?   @db.VarChar(45)
-  federal                     Boolean?
-  observedDate                DateTime? @db.Date
-  province                    String?   @db.VarChar(45)
-  user_id                     Int?
-  employee_calendar_eventscol String?   @db.VarChar(45)
-  user                        user?     @relation(fields: [user_id], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "user_id_fk")
+  event_date   DateTime? @db.Date
+  event_id     Int       @id @default(autoincrement())
+  nameEn       String?   @db.VarChar(45)
+  nameFr       String?   @db.VarChar(45)
+  federal      Boolean?
+  observedDate DateTime? @db.Date
+  province     String?   @db.VarChar(45)
+  user_id      Int?
+  user         user?     @relation(fields: [user_id], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "user_id_fk")
 
   @@index([user_id], map: "user_id_idx")
 }
