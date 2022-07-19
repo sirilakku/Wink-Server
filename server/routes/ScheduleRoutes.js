@@ -2,12 +2,12 @@ const {
   getPositionId,
   getUserSchedsByStore,
   getCoworkersSchedsByStore,
-  getUserSchedsByType,
   createSched,
   editSched,
+  deleteSched,
 } = require("../../model/scheduleModel");
 
-const formatSchedData = require("../utilities/function");
+const { formatSchedData, format } = require("../utilities/function");
 let express = require("express");
 let router = express.Router();
 const moment = require("moment");
@@ -98,7 +98,7 @@ router.get("/weekly", async (req, res) => {
 router.get("/weekly/onlyMine", async (req, res) => {
   try {
     //All employee Schedule
-    console.log(req)
+    console.log(req);
     const storeId = req.query.storeId * 1;
     const userId = req.query.userId * 1;
     const startDayofWeek = req.query.startDay;
@@ -110,41 +110,30 @@ router.get("/weekly/onlyMine", async (req, res) => {
     // console.log("period", startDayofWeek, endDayofWeek);
     const startDay = moment().clone().startOf("day").format();
     const endDay = moment().clone().endOf("day").format();
-    console.log('start adn end', startDay, endDay)
-    const userWorkSchedules = getUserSchedsByType(
+    console.log("start adn end", startDay, endDay);
+    const userAllSchedules = getUserSchedsByStore(
       storeId,
       userId,
       startDayofWeek,
-      endDayofWeek,
-      0
+      endDayofWeek
     );
-    const userVacSchedules = getUserSchedsByType(
-      storeId,
-      userId,
-      startDayofWeek,
-      endDayofWeek,
-      1
-    );
+
     const userTodaySchedules = getUserSchedsByStore(
       storeId,
       userId,
       startDay,
-      endDay,
-      0
+      endDay
     );
-    const userWorkData = await userWorkSchedules;
-    const userVacData = await userVacSchedules;
-    const userTodayData = await userTodaySchedules;
-    
 
-    const weekUserWorkData = formatSchedData(userWorkData);
-    const weekUserVacData = formatSchedData(userVacData);
+    const userAllSchedsData = await userAllSchedules;
+    const userTodayData = await userTodaySchedules;
+
     const todayUserData = formatSchedData(userTodayData);
-    console.log("scheds", weekUserVacData, weekUserWorkData, todayUserData);
+    const weekUserData = format(userAllSchedsData);
+    // console.log("scheds", weekUserVacData, weekUserWorkData, todayUserData, weekUserData[0].schedules.workScheds,weekUserData[0].schedules.vacScheds);
     res.json({
-      myWorkSched: weekUserWorkData,
-      myVacSched: weekUserVacData,
-      myTodayWorkSched: todayUserData
+      myAllSchedules: weekUserData,
+      myTodayWorkSched: todayUserData,
     });
   } catch (err) {
     res.json({ error: "Error to get weekly schedules", message: err });
@@ -238,8 +227,19 @@ router.patch("/scheduling", checkAdmin, async (req, res) => {
 
     res.status(200).json({ message: "success" });
   } catch (err) {
-    res.json("Error to edit/delete schedule", err);
+    res.json("Error to edit schedule", err);
   }
 });
 
+router.delete("/scheduling", checkAdmin, async (req, res) => {
+  try {
+    console.log("Archeiving schedule to", req.body.data);
+    const idSchedule = req.body.data;
+    await deleteSched(idSchedule * 1);
+
+    res.status(200).json({ message: "success" });
+  } catch (err) {
+    res.json("Error to delete schedule", err);
+  }
+});
 module.exports = router;
