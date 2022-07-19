@@ -4,6 +4,7 @@ const scheduleByType = (data) => {
   return {workScheds, vacScheds}
 };
 const formatSchedData = (data) => {
+  console.log("res format", data)
     const res = [];
     data?.map((emp) => {
       const dataObj = {
