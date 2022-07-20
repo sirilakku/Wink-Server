@@ -1,5 +1,6 @@
 const {
   getPositionId,
+  getReqSwapSched, 
   getUserSchedsByStore,
   getCoworkersSchedsByStore,
   createSched,
@@ -7,7 +8,7 @@ const {
   deleteSched,
 } = require("../../model/scheduleModel");
 
-const { formatSchedData, format } = require("../utilities/function");
+const { formatSchedData, format, addSwapReq,addSwapReqSepSched } = require("../utilities/function");
 let express = require("express");
 let router = express.Router();
 const moment = require("moment");
@@ -82,17 +83,23 @@ router.get("/weekly", async (req, res) => {
       startDayofWeek,
       endDayofWeek
     );
+    const approvedSchedes = getReqSwapSched(storeId,userId);
     const userData = await userSchedules;
     const coworkersData = await coworkersSchedules;
-    // console.log('scheds', userData, coworkersData)
+    const swapReqSchedule = await approvedSchedes;
+    console.log('scheds', swapReqSchedule)
     const weekUserData = formatSchedData(userData);
+    // console.log('formated data', weekUserData)
     const weekCoworkersData = formatSchedData(coworkersData);
+    addSwapReq(weekUserData, swapReqSchedule)
+    console.log('result',weekUserData[0].schedules);
     res.json({
       mySchedules: weekUserData,
       coworkersSchedules: weekCoworkersData,
+      // swapReqSchedules: swapReqSchedule
     });
   } catch (err) {
-    res.json("Error to get weekly schedules", err);
+    res.json(`Error to get weekly schedules: ${err}`);
   }
 });
 router.get("/weekly/onlyMine", async (req, res) => {
@@ -124,13 +131,15 @@ router.get("/weekly/onlyMine", async (req, res) => {
       startDay,
       endDay
     );
-
+    const approvedSchedes = getReqSwapSched(storeId,userId);
     const userAllSchedsData = await userAllSchedules;
     const userTodayData = await userTodaySchedules;
-
+    const swapReqSchedule = await approvedSchedes;
     const todayUserData = formatSchedData(userTodayData);
     const weekUserData = format(userAllSchedsData);
     // console.log("scheds", weekUserVacData, weekUserWorkData, todayUserData, weekUserData[0].schedules.workScheds,weekUserData[0].schedules.vacScheds);
+    addSwapReqSepSched(weekUserData, swapReqSchedule)
+    console.log('result',weekUserData[0].schedules);
     res.json({
       myAllSchedules: weekUserData,
       myTodayWorkSched: todayUserData,

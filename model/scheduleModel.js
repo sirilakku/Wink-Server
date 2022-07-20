@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const moment = require("moment");
 // using `prisma` in your application to read and write data in DB
 const prisma = new PrismaClient();
 
@@ -11,6 +12,30 @@ const getPositionId = async (User_idUser, Store_idStore) => {
     return data[0].UserProfile_idUserProfile;
   } catch (err) {
     console.log("Error to check authenticated user", err);
+  }
+};
+const getReqSwapSched = async (storeId, userId) => {
+  try {
+    const approvedTwoDaySched = await prisma.employee_shift_swap.findMany({
+      where: {
+        User_idUser: userId,
+        Store_idStore: storeId,
+        // approved: true,
+        requestTimeStamp: {
+          gte: new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000),
+        },
+        schedule: { is: { archived: false } }
+      },
+      select: {
+        idShiftSwap: true,
+        approved: true,
+        schedule: true,
+      },
+    });
+    // console.log("approvedTow", approvedTwoDay);
+    return approvedTwoDaySched;
+  } catch (err) {
+    console.log("Error to get approved sched", err);
   }
 };
 
@@ -154,6 +179,7 @@ const deleteSched = async (idSchedule) => {
 };
 module.exports = {
   getPositionId,
+  getReqSwapSched ,
   getUserSchedsByStore,
   getCoworkersSchedsByStore,
   createSched,
