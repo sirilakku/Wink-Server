@@ -4,7 +4,7 @@ const scheduleByType = (data) => {
   return {workScheds, vacScheds}
 };
 const formatSchedData = (data) => {
-  console.log("res format", data)
+  // console.log("res format", data)
     const res = [];
     data?.map((emp) => {
       const dataObj = {
@@ -38,6 +38,63 @@ const formatSchedData = (data) => {
     });
     return res;
   };
-
+  const addSwapReq = (weekUserData, swapReqSchedule)=>{
+    weekUserData[0].schedules.map((data)=>{
+      swapReqSchedule.map((swap)=>{
+  
+        // console.log('data', data, swap)
+        if(data.idSchedule===swap.schedule.idSchedule){
+          console.log('data', data,swap);
+          data.requestedSwap = true;
+          if(swap.approved){
+            data.approved = true;
+          }else{
+            data.approved = false;
+          }
+          
+        }else{
+          data.requestedSwap = false;
+        }
+      })
+    })
+  }
+  const addSwapReqSepSched = (weekUserData, swapReqSchedule)=>{
+    console.log('addSwapReqSep2', weekUserData[0].schedules, swapReqSchedule);
+    weekUserData[0].schedules.workScheds.map((data)=>{
+      swapReqSchedule.map((swap)=>{
+  
+        // console.log('data', data, swap)
+        if(data.idSchedule===swap.schedule.idSchedule){
+          data.requestedSwap = true;
+          if(swap.approved){
+            data.approved = true;
+          }else{
+            data.approved = false;
+          }
+          
+        }else{
+          data.requestedSwap = false;
+        }
+      })
+    })
+    weekUserData[0].schedules.vacScheds.map((data)=>{
+      swapReqSchedule.map((swap)=>{
+  
+        // console.log('data', data, swap)
+        if(data.idSchedule===swap.schedule.idSchedule){
+          console.log('data', data,swap);
+          data.requestedSwap = true;
+          if(swap.approved){
+            data.approved = true;
+          }else{
+            data.approved = false;
+          }
+          
+        }else{
+          data.requestedSwap = false;
+        }
+      })
+    })
+  }
   // const format
- module.exports ={formatSchedData, format}
+ module.exports ={formatSchedData, format, addSwapReq, addSwapReqSepSched}

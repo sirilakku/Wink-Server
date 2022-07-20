@@ -19,7 +19,7 @@ router.get("/swapShiftRequest", async (req, res) => {
       `Shift swap request on store id: ${storeId}, user id: ${myId}, from:${from}`
     );
     const scheduleData = await getMySchedulesFrom(storeId, myId, day);
-    console.log("Before set schedules to swap.",scheduleData)
+    // console.log("Before set schedules to swap.",scheduleData)
     const mySchedules = formatSchedData(scheduleData)[0];
     const schedulesToSwap = await getSchedulesToSwap(
       storeId,
@@ -47,7 +47,7 @@ router.post("/swapShiftRequest", async (req, res) => {
       scheduleId,
       approved
     );
-console.log("shiftSwap", shiftSwap)
+// console.log("shiftSwap", shiftSwap)
     res.status(200).json(shiftSwap);
   } catch (err) {
     console.log("Error to create swap shift request", err);
