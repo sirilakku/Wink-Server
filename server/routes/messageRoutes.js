@@ -13,6 +13,7 @@ const {
 } = require("../../model/messaging");
 const { PrismaClient } = require("@prisma/client");
 const { approveShiftSwap } = require("../../model/swapShiftModel");
+const { deleteSched } = require('../../model/scheduleModel')
 
 const prisma = new PrismaClient();
 
@@ -121,6 +122,7 @@ router.post("/approveShiftSwap", async (req, res) => {
     const approveMessage = await approveShiftSwapMessage(req.body);
     console.log("this is the approve", approve);
     console.log("this is the approveMessage", approveMessage);
+    await deleteSched(approve.Schedule_idSchedule);
     res.status(200).json({ message: "Shift swap request approved" });
   } catch (error) {
     res.send(error);
