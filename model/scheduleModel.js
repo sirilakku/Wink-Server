@@ -46,7 +46,8 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
       select: {
         User_idUser: true,
         Store_idStore: true,
-        userprofile: { select: { name: true } },
+        UserProfile_idUserProfile:true,
+        // userprofile: { select: { name: true } },
         user: {
           select: {
             firstname: true,
@@ -68,7 +69,7 @@ const getUserSchedsByStore = async (storeId, userId, startDay, endDay) => {
       },
       orderBy: { userprofile: { name: "asc" } },
     });
-    //console.log("res", my);
+    // console.log("res", my);
     return my;
   } catch (err) {
     console.log("Error to get my schedules", err);
@@ -81,7 +82,8 @@ const getCoworkersSchedsByStore = async (storeId, userId, startDay, endDay) => {
       select: {
         User_idUser: true,
         Store_idStore: true,
-        userprofile: { select: { name: true } },
+        UserProfile_idUserProfile:true,
+        // userprofile: { select: { name: true } },
         user: {
           select: {
             firstname: true,
