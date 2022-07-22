@@ -48,8 +48,10 @@ router.get("/monthly", async (req, res) => {
       startDayOfMonth,
       endOfMonth
     );
-    //console.log("monthlySchedule", monthlySchedule);
-    const monthlyUserData = formatSchedData(monthlySchedule);
+    console.log("monthlySchedule", monthlySchedule[0].user.schedule);
+    //const monthlyUserData = formatSchedData(monthlySchedule);
+    const monthlyUserData = format(monthlySchedule);
+    //console.log('text data',)
     res.status(200).json({ mySchedules: monthlyUserData });
   } catch (err) {
     res.status(err.statusCode).json("Error to get monthly schedules", err);
