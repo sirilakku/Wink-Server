@@ -5,19 +5,8 @@ const prisma = new PrismaClient();
 const getCalEventsForMonth = async (startOfHoliday, endOfHoliday) => {
   try {
     const result =
-      await prisma.$queryRaw`select distinct nameEn,event_date from employee_calendar_events where event_date between ${startOfHoliday} and ${endOfHoliday}`;
-    // const monEvents = await prisma.employee_calendar_events.findMany({
-    //   where: { event_date: startOfHoliday, event_date: endOfHoliday },
-    //   select: {
-    //     nameEn: true,
-    //     event_date: {
-    //       where: {
-    //         event_date: { gte: new Date(startOfHoliday) },
-    //         event_date: { lte: new Date(endOfHoliday) },
-    //       },
-    //     },
-    //   },
-    // });
+      await prisma.$queryRaw`select distinct nameEn,event_date from employee_calendar_events where event_date between ${startOfHoliday} and ${endOfHoliday} and archieve=0`;
+    
     //console.log("Events fetched", result);
     return result;
   } catch (err) {
@@ -31,20 +20,22 @@ const addEvent = async (eventDate, eventName) => {
     const result = await prisma.employee_calendar_events.create({
       data : {
         event_date:new Date(eventDate),
-        nameEn:eventName
+        nameEn:eventName,
+        archieve:(false)
       }
     }
     )
     //console.log("add events result", result);
-    //return result;
+  
   } catch (err) {
     console.log("Error inserting event",err);
   }
 };
 
-const editEvent = async (eventDate,  eventName) =>{
+const deleteEvent = async (eventDate,  eventName) =>{
 try {
-  const result = await prisma.$queryRaw`update employee_calendar_events set event_date=${eventDate}`
+  const result = await prisma.$queryRaw`update employee_calendar_events set archieve=1 where event_date=${eventDate}`
+  return result
 
 } catch (err) {
   console.log("Error editing event")
@@ -52,4 +43,4 @@ try {
 
  
 }
-module.exports = { getCalEventsForMonth, addEvent };
+module.exports = { getCalEventsForMonth, addEvent, deleteEvent };
