@@ -139,9 +139,9 @@ router.get("/weekly/onlyMine", async (req, res) => {
     const swapReqSchedule = await approvedSchedes;
     const todayUserData = formatSchedData(userTodayData);
     const weekUserData = format(userAllSchedsData);
-    // console.log("scheds", weekUserVacData, weekUserWorkData, todayUserData, weekUserData[0].schedules.workScheds,weekUserData[0].schedules.vacScheds);
+    console.log("scheds", todayUserData, weekUserData[0].schedules.workScheds,weekUserData[0].schedules.vacScheds);
     addSwapReqSepSched(weekUserData, swapReqSchedule)
-    console.log('result',weekUserData[0].schedules);
+    // console.log('result',weekUserData[0].schedules);
     res.json({
       myAllSchedules: weekUserData,
       myTodayWorkSched: todayUserData,

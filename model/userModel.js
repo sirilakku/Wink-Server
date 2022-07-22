@@ -40,5 +40,19 @@ let userStoreSelections = async (id) => {
   // console.log("userstore selection", userStores);
   return userStores;
 };
+const getAllPositionsByStore = async (storeId) => {
+  try {
+    const positionData = await prisma.userprivileges.findMany({
+      where: { Store_idStore: storeId },
+      select: {
+        userprofile: { select: { idUserProfile: true, name: true } },
+      },
+    });
+    // console.log("positions", positionData, "at store", storeId);
+    return positionData
+  } catch (err) {
+    console.log(`Error to get all position in store: ${err}`);
+  }
+};
 
-module.exports = { userByName, userStoreSelections };
+module.exports = { userByName, userStoreSelections, getAllPositionsByStore };
