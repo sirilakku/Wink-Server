@@ -950,6 +950,7 @@ model employee_calendar_events {
   observedDate DateTime? @db.Date
   province     String?   @db.VarChar(45)
   user_id      Int?
+  archieve     Boolean?
   user         user?     @relation(fields: [user_id], references: [idUser], onDelete: NoAction, onUpdate: NoAction, map: "user_id_fk")
 
   @@index([user_id], map: "user_id_idx")
