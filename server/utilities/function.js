@@ -23,6 +23,29 @@ const formatSchedData = (data) => {
   });
   return res;
 };
+const formatOnlyEmpWithSched = (data) => {
+  console.log("res format1", data)
+  const res = [];
+  data?.map((emp) => {
+    if(emp.user.schedule.length !== 0){
+
+      const dataObj = {
+        userId: emp.User_idUser,
+        storeId: emp.Store_idStore,
+        firstname: emp.user.firstname,
+        lastname: emp.user.lastname,
+        positionId: emp.UserProfile_idUserProfile,
+        // position: emp.userprofile.name,
+        schedules: emp.user.schedule,
+        availability:
+        emp.user.employee_sched_availability &&
+        emp.user.employee_sched_availability[0],
+      };
+      emp.user.inactive === false && res.push(dataObj);
+    }
+  });
+  return res;
+};
 const format = (data) => {
   console.log("res format2", data)
   const res = [];
@@ -117,4 +140,5 @@ module.exports = {
   addSwapReq,
   addSwapReqSepSched,
   filterDuplicates,
+  formatOnlyEmpWithSched
 };

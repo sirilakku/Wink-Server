@@ -6,9 +6,10 @@ const {
   createSched,
   editSched,
   deleteSched,
+  
 } = require("../../model/scheduleModel");
 
-const { formatSchedData, format, addSwapReq,addSwapReqSepSched } = require("../utilities/function");
+const { formatSchedData, format, addSwapReq,addSwapReqSepSched,formatOnlyEmpWithSched } = require("../utilities/function");
 let express = require("express");
 let router = express.Router();
 const moment = require("moment");
@@ -178,7 +179,7 @@ router.get("/daily", async (req, res) => {
     const coworkersData = await coworkersSchedules;
     // console.log('scheds', userData, coworkersData)
     const dayUserData = formatSchedData(userData);
-    const dayCoworkersData = formatSchedData(coworkersData);
+    const dayCoworkersData = formatOnlyEmpWithSched(coworkersData);
     res.json({
       mySchedules: dayUserData,
       coworkersSchedules: dayCoworkersData,
