@@ -15,11 +15,20 @@ router.get("/events", async (req, res) => {
 
 router.post("/createEvents", async (req,res) =>{
 
-  const eventDate = req.body.eventDate
-  const eventName = req.body.eventName
+  const eventDate = req.body.date
+  const eventName = req.body.name
   //console.log("Events point", eventDate, eventName )
   const newEvent = addEvent(eventDate,eventName)
   const addedEvent = await newEvent
   res.json({addedEvent})
+})
+
+router.post("/deleteEvents", async (req,res) => {
+  const eventDate = req.body.date
+  const eventName = req.body.name
+  const deleteEvent = deleteEvent(eventDate,eventName)
+  const deletedEvent = await deleteEvent
+  res.json({deletedEvent})
+
 })
 module.exports = router;
