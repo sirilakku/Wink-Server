@@ -9,7 +9,8 @@ const getMySchedulesFrom = async (storeId, myId, from) => {
       select: {
         User_idUser: true,
         Store_idStore: true,
-        userprofile: { select: { idUserProfile: true, name: true } },
+        UserProfile_idUserProfile: true,
+        // userprofile: { select: { idUserProfile: true, name: true } },
         user: {
           select: {
             firstname: true,
@@ -44,7 +45,8 @@ const getSchedulesToSwap = async (storeId, myId, positionId, from) => {
       },
       select: {
         User_idUser: true,
-        userprofile: { select: { idUserProfile: true, name: true } },
+        UserProfile_idUserProfile:true,
+        // userprofile: { select: { idUserProfile: true, name: true } },
         user: {
           select: {
             firstname: true,

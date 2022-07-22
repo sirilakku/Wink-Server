@@ -19,8 +19,8 @@ router.get("/swapShiftRequest", async (req, res) => {
       `Shift swap request on store id: ${storeId}, user id: ${myId}, from:${from}`
     );
     const scheduleData = await getMySchedulesFrom(storeId, myId, day);
-    // console.log("Before set schedules to swap.",scheduleData)
     const mySchedules = formatSchedData(scheduleData)[0];
+    console.log("Before set schedules to swap.",mySchedules)
     const schedulesToSwap = await getSchedulesToSwap(
       storeId,
       myId,
